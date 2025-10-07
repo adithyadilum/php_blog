@@ -29,27 +29,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!DOCTYPE html>
-<html>
+<?php include 'includes/header.php'; ?>
 
-<head>
-    <title>Register | PHP Blog</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
+<h2>Register</h2>
+<form method="POST">
+    <label>Username:</label><br>
+    <input type="text" name="username" required><br><br>
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+    <label>Password:</label><br>
+    <input type="password" name="password" required><br><br>
+    <button type="submit">Register</button>
+</form>
 
-<body>
-    <h2>User Registration</h2>
-    <form method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required> <br><br>
-        <label>Email:</label><br>
-        <input type="email" name="email" required> <br><br>
-        <label>Password:</label><br>
-        <input type="password" name="password" required> <br><br>
-        <button type="submit">Register</button>
-    </form>
-    <p style="color:red"><?php echo $message ?></p>
-    <p>Already have an account? <a href="login.php">Login here</a></p>
-</body>
+<p style="color:red;"><?php echo $message ?? ''; ?></p>
 
-</html>
+<?php include 'includes/footer.php'; ?>

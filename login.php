@@ -26,30 +26,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $message = "Incorrect password!";
         }
+    } else {
         $message = "User not found!";
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Login | PHP Blog</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-
-<body>
-    <h2>Login</h2>
-    <form method="post">
-        <label>Username</label><br>
-        <input type="text" name="username" required> <br><br>
-        <label>Password</label><br>
-        <input type="password" name="password" required> <br><br>
-        <button type="submit">Login</button>
-    </form>
-    <p style="color: red;"> <?php echo $message ?> </p>
-    <p>Don't have an account? <a href="register.php">Register here</a></p>
-</body>
-
-</html>
+<?php include 'includes/header.php'; ?>
+<h2>Login</h2>
+<form method="post">
+    <label>Username</label><br>
+    <input type="text" name="username" required> <br><br>
+    <label>Password</label><br>
+    <input type="password" name="password" required> <br><br>
+    <button type="submit">Login</button>
+</form>
+<p style="color: red;"> <?php echo $message ?> </p>
+<p>Don't have an account? <a href="register.php">Register here</a></p>
+<?php include 'includes/footer.php'; ?>
