@@ -38,3 +38,39 @@ footer {
     margin-top: 40px;
     font-size: 14px;
 }
+
+.posts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.post-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.post-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.tags {
+    color: #555;
+    font-size: 14px;
+}
+
+.post-card h3 {
+    margin: 10px 0 5px;
+}
+
+.post-card p {
+    font-size: 15px;
+    color: #444;
+}
