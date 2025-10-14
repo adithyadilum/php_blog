@@ -31,6 +31,14 @@ $result = $conn->query($query);
                     <?php echo nl2br(substr(htmlspecialchars($row['content']), 0, 150)); ?>...
                     <a href="posts/view.php?id=<?php echo $row['id']; ?>">Read more</a>
                 </p>
+
+                <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']): ?>
+                    <p>
+                        <a href="posts/edit.php?id=<?php echo $row['id']; ?>">Edit</a> |
+                        <a href="posts/delete.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
+                    </p>
+                <?php endif; ?>
+
             </div>
         <?php endwhile; ?>
     <?php else: ?>
