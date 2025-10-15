@@ -71,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label>Content:</label><br>
     <textarea name="content" rows="8" cols="60" required><?php echo htmlspecialchars($post['content']); ?></textarea><br><br>
+    <p><small>You can use Markdown syntax for formatting (e.g., **bold**, *italic*, # Heading)</small></p>
 
     <label>Tags:</label><br>
     <input type="text" name="tags" value="<?php echo htmlspecialchars($post['tags']); ?>"><br><br>

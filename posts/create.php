@@ -46,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label>Content:</label><br>
     <textarea name="content" rows="8" cols="60" required></textarea><br><br>
+    <p><small>You can use Markdown syntax for formatting (e.g., **bold**, *italic*, # Heading)</small></p>
 
     <label>Tags (comma-separated):</label><br>
     <input type="text" name="tags"><br><br>

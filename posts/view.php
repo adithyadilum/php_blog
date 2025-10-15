@@ -1,6 +1,8 @@
 <?php
 include '../includes/header.php';
 include '../config.php';
+include '../includes/Parsedown.php';
+$Parsedown = new Parsedown();
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "<p>Invalid post ID.</p>";
@@ -43,9 +45,11 @@ $post = $result->fetch_assoc();
     <?php if (!empty($post['tags'])): ?>
         <p class="tags">Tags: <?php echo htmlspecialchars($post['tags']); ?></p>
     <?php endif; ?>
+
     <div class="content">
-        <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+        <?php echo $Parsedown->text($post['content']); ?>
     </div>
+
     <?php
     // count likes
     $count = $conn->prepare("SELECT COUNT(*) AS total FROM likes WHERE post_id=?");
@@ -79,6 +83,65 @@ $post = $result->fetch_assoc();
     </div>
     <p><a href="../index.php">Back to home</a></p>
 </div>
+<hr>
+<h3>Comments</h3>
+<?php
+// Handle new commnent
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['comment'])) {
+    if (!isset($_SESSION['user_id'])) {
+        echo "<p>Please <a href='../login.php'>login</a> to comment.</p>";
+    } else {
+        $comment = trim($_POST['comment']);
+        $user_id = $_SESSION['user_id'];
+
+        if (!empty($comment)) {
+            $stmt = $conn->prepare("INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)");
+            $stmt->bind_param("iis", $post_id, $user_id, $comment);
+            $stmt->execute();
+        }
+    }
+}
+// Fetch comments
+$comments = $conn->prepare("
+  SELECT comments.*, users.username 
+  FROM comments 
+  JOIN users ON comments.user_id = users.id
+  WHERE comments.post_id = ?
+  ORDER BY comments.created_at DESC
+");
+$comments->bind_param("i", $post_id);
+$comments->execute();
+$result_comments = $comments->get_result();
+?>
+
+<?php if (isset($_SESSION['user_id'])): ?>
+    <form method="post">
+        <textarea name="comment" rows="3" cols="70" placeholder="Write your comment..." required></textarea><br>
+        <button type="submit">Post Comment</button>
+    </form>
+<?php else: ?>
+    <p><a href="../login.php">Login to post a comment</a></p>
+<?php endif; ?>
+
+<div class="comments">
+    <?php if ($result_comments && $result_comments->num_rows > 0): ?>
+        <?php while ($c = $result_comments->fetch_assoc()): ?>
+            <div class="comment">
+                <p>
+                    <strong><?php echo htmlspecialchars($c['username']); ?></strong>
+                    <small>
+                        <?php echo date("M d, Y H:i", strtotime($c['created_at'])); ?>
+                    </small>
+                </p>
+                <p><?php echo nl2br(htmlspecialchars($c['content'])); ?></p>
+            </div>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p>No comments yet.</p>
+    <?php endif; ?>
+</div>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const likeBtn = document.getElementById('like-btn');
