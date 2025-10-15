@@ -2,12 +2,30 @@
 include 'includes/header.php';
 include 'config.php';
 
-// Fetch all posts (newest first)
-$query = "SELECT posts.*, users.username 
-          FROM posts 
-          JOIN users ON posts.user_id = users.id 
-          ORDER BY posts.created_at DESC";
-$result = $conn->query($query);
+$tagFilter = isset($_GET['tag']) ? trim($_GET['tag']) : null;
+
+if ($tagFilter) {
+    $stmt = $conn->prepare("
+        SELECT posts.*, users.username
+        FROM posts
+        JOIN users ON posts.user_id = users.id
+        WHERE posts.tags LIKE ?
+        ORDER BY posts.created_at DESC
+    ");
+    $likeParam = '%' . $tagFilter . '%';
+    $stmt->bind_param("s", $likeParam);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    echo "<h3>Showing posts tagged with: <em>$tagFilter</em></h3>";
+} else {
+    $result = $conn->query("
+        SELECT posts.*, users.username 
+        FROM posts 
+        JOIN users ON posts.user_id = users.id 
+        ORDER BY posts.created_at DESC
+    ");
+}
+
 ?>
 
 <h2>Latest Blog Posts</h2>
@@ -24,7 +42,16 @@ $result = $conn->query($query);
                 <p><small>By <?php echo htmlspecialchars($row['username']); ?> on <?php echo date("M d, Y", strtotime($row['created_at'])); ?></small></p>
 
                 <?php if (!empty($row['tags'])): ?>
-                    <p class="tags">Tags: <?php echo htmlspecialchars($row['tags']); ?></p>
+                    <p class="tags">
+                        Tags:
+                        <?php
+                        $tags = explode(',', $row['tags']);
+                        foreach ($tags as $tag) {
+                            $tag = trim($tag);
+                            echo "<a href='index.php?tag=" . urlencode($tag) . "'>$tag</a> ";
+                        }
+                        ?>
+                    </p>
                 <?php endif; ?>
 
                 <p>

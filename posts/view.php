@@ -46,6 +46,63 @@ $post = $result->fetch_assoc();
     <div class="content">
         <?php echo nl2br(htmlspecialchars($post['content'])); ?>
     </div>
+    <?php
+    // count likes
+    $count = $conn->prepare("SELECT COUNT(*) AS total FROM likes WHERE post_id=?");
+    $count->bind_param("i", $post_id);
+    $count->execute();
+    $resultCount = $count->get_result();
+    $totalLikes = $resultCount->fetch_assoc()['total'] ?? 0;
+
+    // check if already liked
+    $userLiked = false;
+    if (isset($_SESSION['user_id'])) {
+        $likeCheck = $conn->prepare("SELECT id FROM likes WHERE post_id=? AND user_id=?");
+        $likeCheck->bind_param("ii", $post_id, $_SESSION['user_id']);
+        $likeCheck->execute();
+        $likeCheck->store_result();
+        $userLiked = $likeCheck->num_rows > 0;
+    }
+    ?>
+    <div class="likes">
+        <form method="GET" action="like.php">
+            <input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <button type="button" id="like-btn" data-post="<?php echo $post_id; ?>">
+                    <?php echo $userLiked ? '❤️ Unlike' : '🤍 Like'; ?>
+                </button>
+            <?php else: ?>
+                <p><a href="../login.php">Login to like this post</a></p>
+            <?php endif; ?>
+        </form>
+        <p id="like-count">Likes: <?php echo $totalLikes; ?></p>
+    </div>
     <p><a href="../index.php">Back to home</a></p>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const likeBtn = document.getElementById('like-btn');
+        if (!likeBtn) return;
+
+        likeBtn.addEventListener('click', () => {
+            const postId = likeBtn.getAttribute('data-post');
+            fetch(`like.php?post_id=${postId}`)
+                .then(res => res.text())
+                .then(data => {
+                    if (data === "liked") {
+                        likeBtn.textContent = "❤️ Unlike";
+                    } else {
+                        likeBtn.textContent = "🤍 Like";
+                    }
+                    // Refresh like count
+                    fetch(`../api/like_count.php?post_id=${postId}`)
+                        .then(r => r.text())
+                        .then(count => {
+                            document.getElementById('like-count').textContent = "Likes: " + count;
+                        });
+                });
+        });
+    });
+</script>
+
 <?php include '../includes/footer.php'; ?>
