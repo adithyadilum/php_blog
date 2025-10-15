@@ -46,9 +46,9 @@ $post = $result->fetch_assoc();
         <p class="tags">Tags: <?php echo htmlspecialchars($post['tags']); ?></p>
     <?php endif; ?>
 
-    <div class="content">
+    <article class="prose lg:prose-lg mx-auto">
         <?php echo $Parsedown->text($post['content']); ?>
-    </div>
+    </article>
 
     <?php
     // count likes
