@@ -125,17 +125,19 @@ $result_comments = $comments->get_result();
 
 <div class="comments">
     <?php if ($result_comments && $result_comments->num_rows > 0): ?>
-        <?php while ($c = $result_comments->fetch_assoc()): ?>
-            <div class="comment">
-                <p>
-                    <strong><?php echo htmlspecialchars($c['username']); ?></strong>
-                    <small>
-                        <?php echo date("M d, Y H:i", strtotime($c['created_at'])); ?>
-                    </small>
-                </p>
-                <p><?php echo nl2br(htmlspecialchars($c['content'])); ?></p>
-            </div>
-        <?php endwhile; ?>
+        <div class="mt-10">
+            <h3 class="text-xl font-semibold mb-4">Comments</h3>
+            <?php while ($c = $result_comments->fetch_assoc()): ?>
+                <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                    <p class="text-sm text-gray-600 mb-1">
+                        <strong class="text-primary"><?php echo htmlspecialchars($c['username']); ?></strong>
+                        <span class="text-gray-500">— <?php echo date("M d, Y H:i", strtotime($c['created_at'])); ?></span>
+                    </p>
+                    <p><?php echo nl2br(htmlspecialchars($c['content'])); ?></p>
+                </div>
+            <?php endwhile; ?>
+        </div>
+
     <?php else: ?>
         <p>No comments yet.</p>
     <?php endif; ?>
