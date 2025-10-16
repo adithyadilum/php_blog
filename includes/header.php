@@ -1,5 +1,5 @@
 <?php
-// ✅ Always start session first, before any HTML
+// Always start session first, before any HTML
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -13,27 +13,41 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>PHP Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts: Inter and GT Super Display Light -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://db.onlinewebfonts.com/c/685863138475bd81c7e5068082244fc5?family=GT+Super+Display+Light" rel="stylesheet" type="text/css" />
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
 
+    <!-- Custom Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3b82f6',
-                        secondary: '#facc15',
-                        dark: '#111827',
+                        cream: '#FAF6E9', // main background
+                        sand: '#ECE8D9', // secondary background
+                        linen: '#FFFDF6', // content/card background
+                        charcoal: '#494949', // text color
                     },
                     fontFamily: {
+                        heading: ['"GT Super Display Light"', 'serif'],
                         sans: ['Inter', 'sans-serif'],
-                        heading: ['GT Super Display Light', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        soft: '0 4px 12px rgba(0, 0, 0, 0.04)',
+                        hover: '0 6px 20px rgba(0, 0, 0, 0.08)',
+                    },
+                    borderRadius: {
+                        xl: '1rem',
+                        '2xl': '1.5rem',
                     },
                 },
             },
-        };
+        }
     </script>
 </head>
 
