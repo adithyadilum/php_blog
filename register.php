@@ -8,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $role = 'user';
 
     //check if usrename or email already exists
     $check = $conn->prepare("SELECT id FROM users WHERE username=? OR email=?");
@@ -18,8 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($check->num_rows > 0) {
         $message = "Username or email already exists!";
     } else {
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?,?,?)");
-        $stmt->bind_param("sss", $username, $email, $password);
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?,?,?,?)");
+        $stmt->bind_param("ssss", $username, $email, $password, $role);
         if ($stmt->execute()) {
             $message = "Registration successful! You can now log in.";
         } else {
@@ -36,6 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form method="POST">
         <label class="block mb-2 text-sm font-medium">Username</label>
         <input type="text" name="username" class="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-primary" required>
+
+        <label class="block mb-2 text-sm font-medium">Email</label>
+        <input type="email" name="email" class="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-primary" required>
 
         <label class="block mb-2 text-sm font-medium">Password</label>
         <input type="password" name="password" class="w-full border rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-primary" required>

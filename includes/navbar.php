@@ -3,7 +3,7 @@
 
         <!-- Left: Logo -->
         <div class="flex justify-between items-center">
-            <a href="/php_blog/index.php" class="text-2xl font-heading text-primary">PHP flog</a>
+            <a href="/php_blog/index.php" class="text-2xl font-heading text-primary">📝 PHP Blog</a>
         </div>
 
         <!-- Center: Search bar -->
