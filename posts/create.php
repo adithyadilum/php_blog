@@ -30,7 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("issss", $user_id, $title, $content, $tags, $cover_image);
 
     if ($stmt->execute()) {
-        $message = "Post created successfully!";
+        header("Location: ../index.php?msg=created");
+        exit;
     } else {
         $message = "Error: " . $stmt->error;
     }

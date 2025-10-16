@@ -37,7 +37,8 @@ if ($tagFilter) {
     $stmt->bind_param("s", $param);
     $stmt->execute();
     $result = $stmt->get_result();
-    echo "<h3>Showing posts tagged with: <em>$tagFilter</em></h3>";
+    $safeTag = htmlspecialchars($tagFilter, ENT_QUOTES, 'UTF-8');
+    echo "<h3>Showing posts tagged with: <em>{$safeTag}</em></h3>";
 } elseif ($search) {
     $stmt = $conn->prepare("
         SELECT posts.*, users.username
@@ -50,7 +51,8 @@ if ($tagFilter) {
     $stmt->bind_param("ss", $param, $param);
     $stmt->execute();
     $result = $stmt->get_result();
-    echo "<h3>Search results for: <em>$search</em></h3>";
+    $safeSearch = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
+    echo "<h3>Search results for: <em>{$safeSearch}</em></h3>";
 } else {
     $result = $conn->query("
         SELECT posts.*, users.username
@@ -71,7 +73,10 @@ if ($tagFilter) {
             $like_stmt->bind_param("i", $row['id']);
             $like_stmt->execute();
             $like_result = $like_stmt->get_result();
-            $like_count = $like_result->fetch_assoc()['count'];
+            $like_row = $like_result->fetch_assoc();
+            $like_count = isset($like_row['count']) ? (int) $like_row['count'] : 0;
+            $like_result->free();
+            $like_stmt->close();
 
             // Check if current user liked this post
             $user_liked = false;
@@ -79,7 +84,10 @@ if ($tagFilter) {
                 $check_stmt = $conn->prepare("SELECT id FROM likes WHERE post_id = ? AND user_id = ?");
                 $check_stmt->bind_param("ii", $row['id'], $_SESSION['user_id']);
                 $check_stmt->execute();
-                $user_liked = $check_stmt->get_result()->num_rows > 0;
+                $check_stmt->store_result();
+                $user_liked = $check_stmt->num_rows > 0;
+                $check_stmt->free_result();
+                $check_stmt->close();
             }
         ?>
             <div class="post-card bg-white shadow rounded-lg p-6 mb-6 hover:shadow-lg transition">
@@ -132,7 +140,11 @@ if ($tagFilter) {
                     <?php endif; ?>
 
                     <!-- Edit/Delete Buttons -->
-                    <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']): ?>
+                    <?php
+                    $isOwner = isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id'];
+                    $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+                    if ($isOwner || $isAdmin):
+                    ?>
                         <a href="posts/edit.php?id=<?php echo $row['id']; ?>"
                             class="inline-flex items-center gap-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors duration-200">
                             ✏️ Edit
@@ -145,11 +157,10 @@ if ($tagFilter) {
                     <?php endif; ?>
                 </div>
             </div>
-</div>
-<?php endwhile; ?>
-<?php else: ?>
-    <p>No posts yet. <a href="posts/create.php">Create your first one</a>!</p>
-<?php endif; ?>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p>No posts yet. <a href="posts/create.php">Create your first one</a>!</p>
+    <?php endif; ?>
 </div>
 
 <script>

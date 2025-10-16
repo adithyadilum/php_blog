@@ -56,7 +56,10 @@ $post = $result->fetch_assoc();
     $count->bind_param("i", $post_id);
     $count->execute();
     $resultCount = $count->get_result();
-    $totalLikes = $resultCount->fetch_assoc()['total'] ?? 0;
+    $countRow = $resultCount->fetch_assoc();
+    $totalLikes = isset($countRow['total']) ? (int) $countRow['total'] : 0;
+    $resultCount->free();
+    $count->close();
 
     // check if already liked
     $userLiked = false;
@@ -66,20 +69,24 @@ $post = $result->fetch_assoc();
         $likeCheck->execute();
         $likeCheck->store_result();
         $userLiked = $likeCheck->num_rows > 0;
+        $likeCheck->free_result();
+        $likeCheck->close();
     }
     ?>
-    <div class="likes">
-        <form method="GET" action="like.php">
-            <input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <button type="button" id="like-btn" data-post="<?php echo $post_id; ?>">
-                    <?php echo $userLiked ? '❤️ Unlike' : '🤍 Like'; ?>
-                </button>
-            <?php else: ?>
-                <p><a href="../login.php">Login to like this post</a></p>
-            <?php endif; ?>
-        </form>
-        <p id="like-count">Likes: <?php echo $totalLikes; ?></p>
+    <div class="likes mt-6 flex items-center gap-4">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <button type="button"
+                id="like-btn"
+                data-post="<?php echo $post_id; ?>"
+                class="inline-flex items-center gap-2 px-4 py-2 border-2 rounded-full text-sm font-semibold transition-all duration-300 <?php echo $userLiked ? 'bg-red-50 border-red-400 text-red-600' : 'bg-gray-100 border-gray-300 text-gray-700 hover:bg-red-50 hover:border-red-400'; ?>">
+                <span class="text-lg">❤️</span>
+                <span class="like-label"><?php echo $userLiked ? 'Unlike' : 'Like'; ?></span>
+            </button>
+        <?php else: ?>
+            <p><a href="../login.php" class="text-primary hover:underline">Login to like this post</a></p>
+        <?php endif; ?>
+
+        <p id="like-count" class="text-gray-600">Likes: <span><?php echo $totalLikes; ?></span></p>
     </div>
     <p><a href="../index.php">Back to home</a></p>
 </div>
@@ -149,22 +156,48 @@ $result_comments = $comments->get_result();
         const likeBtn = document.getElementById('like-btn');
         if (!likeBtn) return;
 
+        const likeLabel = likeBtn.querySelector('.like-label');
+        const likeCountEl = document.querySelector('#like-count span');
+
         likeBtn.addEventListener('click', () => {
             const postId = likeBtn.getAttribute('data-post');
-            fetch(`like.php?post_id=${postId}`)
-                .then(res => res.text())
+            likeBtn.disabled = true;
+            likeBtn.classList.add('opacity-70');
+
+            fetch('../api/toggle_like.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `post_id=${postId}`
+                })
+                .then(res => res.json())
                 .then(data => {
-                    if (data === "liked") {
-                        likeBtn.textContent = "❤️ Unlike";
-                    } else {
-                        likeBtn.textContent = "🤍 Like";
+                    if (!data.success) {
+                        alert(data.message || 'Unable to update like status.');
+                        return;
                     }
-                    // Refresh like count
-                    fetch(`../api/like_count.php?post_id=${postId}`)
-                        .then(r => r.text())
-                        .then(count => {
-                            document.getElementById('like-count').textContent = "Likes: " + count;
-                        });
+
+                    if (data.action === 'liked') {
+                        likeBtn.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-700', 'hover:bg-red-50', 'hover:border-red-400');
+                        likeBtn.classList.add('bg-red-50', 'border-red-400', 'text-red-600');
+                        likeLabel.textContent = 'Unlike';
+                    } else {
+                        likeBtn.classList.add('bg-gray-100', 'border-gray-300', 'text-gray-700', 'hover:bg-red-50', 'hover:border-red-400');
+                        likeBtn.classList.remove('bg-red-50', 'border-red-400', 'text-red-600');
+                        likeLabel.textContent = 'Like';
+                    }
+
+                    if (likeCountEl) {
+                        likeCountEl.textContent = data.count;
+                    }
+                })
+                .catch(() => {
+                    alert('An unexpected error occurred. Please try again.');
+                })
+                .finally(() => {
+                    likeBtn.disabled = false;
+                    likeBtn.classList.remove('opacity-70');
                 });
         });
     });

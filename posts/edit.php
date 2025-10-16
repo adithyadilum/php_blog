@@ -9,10 +9,34 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $post_id = (int) $_GET['id'];
 $user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role'] ?? 'user';
+$isAdmin = ($user_role === 'admin');
 
-// Fetch post owned by this user
-$stmt = $conn->prepare("SELECT * FROM posts WHERE id = ? AND user_id = ?");
-$stmt->bind_param("ii", $post_id, $user_id);
+// Get post owner
+$stmt = $conn->prepare("SELECT user_id FROM posts WHERE id=?");
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$stmt->bind_result($owner_id);
+if (!$stmt->fetch()) {
+    $stmt->close();
+    header("Location: ../index.php");
+    exit;
+}
+$stmt->close();
+
+// Access control
+if (!$isAdmin && $user_id != $owner_id) {
+    die("Unauthorized: You don't have permission to edit this post.");
+}
+
+// Fetch post for editing
+if ($isAdmin) {
+    $stmt = $conn->prepare("SELECT * FROM posts WHERE id = ?");
+    $stmt->bind_param("i", $post_id);
+} else {
+    $stmt = $conn->prepare("SELECT * FROM posts WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $post_id, $user_id);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -23,6 +47,7 @@ if ($result->num_rows === 0) {
 }
 
 $post = $result->fetch_assoc();
+$stmt->close();
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -43,8 +68,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $update = $conn->prepare("UPDATE posts SET title=?, content=?, tags=?, cover_image=?, updated_at=NOW() WHERE id=? AND user_id=?");
-    $update->bind_param("ssssii", $title, $content, $tags, $cover_image, $post_id, $user_id);
+    if ($isAdmin) {
+        $update = $conn->prepare("UPDATE posts SET title=?, content=?, tags=?, cover_image=?, updated_at=NOW() WHERE id=?");
+        $update->bind_param("ssssi", $title, $content, $tags, $cover_image, $post_id);
+    } else {
+        $update = $conn->prepare("UPDATE posts SET title=?, content=?, tags=?, cover_image=?, updated_at=NOW() WHERE id=? AND user_id=?");
+        $update->bind_param("ssssii", $title, $content, $tags, $cover_image, $post_id, $user_id);
+    }
 
     if ($update->execute()) {
         $message = "Post updated successfully!";
@@ -56,6 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $message = "Error updating post: " . $update->error;
     }
+    $update->close();
 }
 ?>
 
@@ -63,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <h2>Edit Post</h2>
 
-<p style="color:green;"><?php echo $message; ?></p>
+<p style="color:green;"><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
 
 <form method="POST" enctype="multipart/form-data">
     <label>Title:</label><br>
