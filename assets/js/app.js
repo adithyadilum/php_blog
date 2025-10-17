@@ -141,5 +141,74 @@
         if (!initMarkdownEditors()) {
             window.addEventListener('load', initMarkdownEditors, { once: true });
         }
+
+        const menuToggle = document.querySelector('[data-nav-menu-toggle]');
+        const mobileMenu = document.querySelector('[data-mobile-menu]');
+        const searchToggle = document.querySelector('[data-nav-search-toggle]');
+        const mobileSearch = document.querySelector('[data-mobile-search]');
+        const mobileSearchInput = mobileSearch ? mobileSearch.querySelector('input') : null;
+        const mqDesktop = window.matchMedia('(min-width: 768px)');
+
+        function closeElement(el, toggle) {
+            if (!el) {
+                return;
+            }
+            el.classList.add('hidden');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        function openElement(el, toggle) {
+            if (!el) {
+                return;
+            }
+            el.classList.remove('hidden');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                if (isExpanded) {
+                    closeElement(mobileMenu, menuToggle);
+                } else {
+                    openElement(mobileMenu, menuToggle);
+                    closeElement(mobileSearch, searchToggle);
+                }
+            });
+        }
+
+        if (searchToggle && mobileSearch) {
+            searchToggle.addEventListener('click', () => {
+                const isExpanded = searchToggle.getAttribute('aria-expanded') === 'true';
+                if (isExpanded) {
+                    closeElement(mobileSearch, searchToggle);
+                } else {
+                    openElement(mobileSearch, searchToggle);
+                    closeElement(mobileMenu, menuToggle);
+                    window.setTimeout(() => {
+                        if (mobileSearchInput) {
+                            mobileSearchInput.focus();
+                        }
+                    }, 50);
+                }
+            });
+        }
+
+        function handleBreakpointChange(event) {
+            if (event.matches) {
+                closeElement(mobileMenu, menuToggle);
+                closeElement(mobileSearch, searchToggle);
+            }
+        }
+
+        if (mqDesktop && typeof mqDesktop.addEventListener === 'function') {
+            mqDesktop.addEventListener('change', handleBreakpointChange);
+        } else if (mqDesktop && typeof mqDesktop.addListener === 'function') {
+            mqDesktop.addListener(handleBreakpointChange);
+        }
     });
 })();

@@ -35,43 +35,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php include 'includes/header.php'; ?>
 
-<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-8">
-    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Login</h2>
-
-    <?php if (!empty($message)): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
-            <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
-        </div>
-    <?php endif; ?>
-
-    <form method="post" class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <input type="text"
-                name="username"
-                value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') : ''; ?>"
-                required
-                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+<section class="px-6 py-16">
+    <div class="mx-auto flex max-w-5xl flex-col gap-10 md:flex-row md:items-center">
+        <div class="md:w-1/2 space-y-4 text-center md:text-left">
+            <p class="uppercase tracking-[0.4em] text-xs text-charcoal/60">Welcome back</p>
+            <h1 class="font-heading text-4xl text-charcoal">Unlock your creative dashboard</h1>
+            <p class="font-sans text-base text-charcoal/70">Sign in to Paper & Pixels to continue crafting stories that blend artistry with technology. Your projects, drafts, and bookmarked inspirations are waiting.</p>
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input type="password"
-                name="password"
-                required
-                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+        <div class="md:w-1/2">
+            <div class="rounded-3xl border border-charcoal/10 bg-linen/70 p-8 shadow-soft backdrop-blur">
+                <h2 class="font-heading text-2xl text-charcoal text-center mb-6">Log in</h2>
+
+                <?php if (!empty($message)): ?>
+                    <div class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">
+                        <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="post" class="space-y-5">
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-[0.3em] text-charcoal/70">Username</label>
+                        <input type="text"
+                            name="username"
+                            value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') : ''; ?>"
+                            required
+                            class="w-full rounded-xl border border-charcoal/20 bg-white/70 px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-charcoal/50 focus:bg-white focus:outline-none focus:ring-0 transition" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-[0.3em] text-charcoal/70">Password</label>
+                        <input type="password"
+                            name="password"
+                            required
+                            class="w-full rounded-xl border border-charcoal/20 bg-white/70 px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-charcoal/50 focus:bg-white focus:outline-none focus:ring-0 transition" />
+                    </div>
+
+                    <button type="submit"
+                        class="w-full rounded-full bg-charcoal px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-linen transition hover:bg-opacity-80">
+                        Sign In
+                    </button>
+                </form>
+
+                <p class="mt-6 text-center text-sm text-charcoal/70">
+                    New here?
+                    <a href="register.php" class="font-medium text-charcoal hover:opacity-70 underline-offset-4 hover:underline">Create an account</a>
+                </p>
+            </div>
         </div>
-
-        <button type="submit"
-            class="w-full bg-primary text-white py-2 rounded-md hover:bg-blue-600 transition duration-200 font-semibold">
-            Sign In
-        </button>
-    </form>
-
-    <p class="text-center text-sm text-gray-600 mt-4">
-        Don't have an account?
-        <a href="register.php" class="text-primary hover:underline">Register here</a>
-    </p>
-</div>
+    </div>
+</section>
 
 <?php include 'includes/footer.php'; ?>
