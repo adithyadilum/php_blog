@@ -1,6 +1,6 @@
 <?php
 include 'includes/header.php';
-include 'config.php';
+include 'includes/config.php';
 
 $successNotice = '';
 if (isset($_GET['msg'])) {

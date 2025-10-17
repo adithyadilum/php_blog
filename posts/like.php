@@ -1,6 +1,6 @@
 <?php
 include '../includes/auth_check.php';
-include '../config.php';
+include '../includes/config.php';
 
 if (!isset($_GET['post_id']) || !is_numeric($_GET['post_id'])) {
     exit('Invalid post ID.');

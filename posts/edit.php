@@ -1,6 +1,6 @@
 <?php
 include '../includes/auth_check.php';
-include '../config.php';
+include '../includes/config.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: ../index.php");

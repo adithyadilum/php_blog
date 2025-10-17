@@ -1,6 +1,6 @@
 <?php
 include '../includes/auth_check.php';
-include '../config.php';
+include '../includes/config.php';
 
 $message = "";
 

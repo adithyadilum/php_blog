@@ -1,6 +1,6 @@
 <?php
 include '../includes/header.php';
-include '../config.php';
+include '../includes/config.php';
 include '../includes/Parsedown.php';
 $Parsedown = new Parsedown();
 
