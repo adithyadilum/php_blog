@@ -80,28 +80,66 @@
             }));
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const detailButton = document.querySelector('#like-btn[data-post]');
-        if (!detailButton) {
-            return;
+    function initMarkdownEditors() {
+        if (!window.SimpleMDE) {
+            return false;
         }
 
-        const postId = detailButton.getAttribute('data-post');
-        const labelEl = detailButton.querySelector('.like-label');
-        const countElContainer = document.querySelector('#like-count span');
+        document.querySelectorAll('[data-markdown-editor]').forEach((textarea) => {
+            if (textarea.dataset.simplemdeInitialized === 'true') {
+                return;
+            }
 
-        detailButton.addEventListener('click', () => {
-            withLoading(detailButton, () => sendToggleRequest(postId)
-                .then((data) => {
-                    handleResponse(detailButton, data, {
-                        countEl: countElContainer,
-                        labelEl,
-                    });
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert(error.message || 'Failed to update like');
-                }));
+            textarea.dataset.simplemdeInitialized = 'true';
+
+            const editor = new window.SimpleMDE({
+                element: textarea,
+                autofocus: true,
+                spellChecker: true,
+                status: false,
+                renderingConfig: {
+                    singleLineBreaks: false,
+                },
+            });
+
+            // Ensure the underlying textarea stays in sync for form submissions
+            editor.codemirror.on('change', () => {
+                editor.codemirror.save();
+            });
+
+            // Populate initial value in case the textarea started with content
+            editor.codemirror.save();
         });
+
+        return true;
+    }
+
+    window.initMarkdownEditors = initMarkdownEditors;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const detailButton = document.querySelector('#like-btn[data-post]');
+        if (detailButton) {
+            const postId = detailButton.getAttribute('data-post');
+            const labelEl = detailButton.querySelector('.like-label');
+            const countElContainer = document.querySelector('#like-count span');
+
+            detailButton.addEventListener('click', () => {
+                withLoading(detailButton, () => sendToggleRequest(postId)
+                    .then((data) => {
+                        handleResponse(detailButton, data, {
+                            countEl: countElContainer,
+                            labelEl,
+                        });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert(error.message || 'Failed to update like');
+                    }));
+            });
+        }
+
+        if (!initMarkdownEditors()) {
+            window.addEventListener('load', initMarkdownEditors, { once: true });
+        }
     });
 })();

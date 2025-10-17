@@ -36,16 +36,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Error: " . $stmt->error;
     }
 }
-?>
 
-<?php include '../includes/header.php'; ?>
+$page_extra_head = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css">';
+$page_extra_scripts = '<script src="https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.js"></script>';
+
+include '../includes/header.php';
+?>
 
 <div class="max-w-2xl mx-auto">
     <h2 class="text-3xl font-bold mb-6 text-gray-800">Create New Post</h2>
 
     <?php if (!empty($message)): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg mb-6">
-            <?php echo htmlspecialchars($message); ?>
+            <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
         </div>
     <?php endif; ?>
 
@@ -55,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text"
                 name="title"
                 required
+                value="<?php echo isset($_POST['title']) ? htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8') : ''; ?>"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
 
@@ -63,7 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <textarea name="content"
                 rows="10"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                data-markdown-editor="true"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"><?php echo isset($_POST['content']) ? htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8') : ''; ?></textarea>
             <p class="text-sm text-gray-500 mt-1">You can use Markdown syntax for formatting (e.g., **bold**, *italic*, # Heading)</p>
         </div>
 
@@ -72,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text"
                 name="tags"
                 placeholder="e.g. php, web, tutorial"
+                value="<?php echo isset($_POST['tags']) ? htmlspecialchars($_POST['tags'], ENT_QUOTES, 'UTF-8') : ''; ?>"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
 

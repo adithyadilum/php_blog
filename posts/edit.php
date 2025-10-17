@@ -77,45 +77,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($update->execute()) {
-        $message = "Post updated successfully!";
-        // Refresh post data
-        $post['title'] = $title;
-        $post['content'] = $content;
-        $post['tags'] = $tags;
-        $post['cover_image'] = $cover_image;
+        header("Location: ../index.php?msg=updated");
+        exit;
     } else {
         $message = "Error updating post: " . $update->error;
     }
     $update->close();
 }
+
+$page_extra_head = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css">';
+$page_extra_scripts = '<script src="https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.js"></script>';
+
+include '../includes/header.php';
 ?>
 
-<?php include '../includes/header.php'; ?>
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold mb-6 text-gray-800">Edit Post</h2>
 
-<h2>Edit Post</h2>
-
-<p style="color:green;"><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-
-<form method="POST" enctype="multipart/form-data">
-    <label>Title:</label><br>
-    <input type="text" name="title" value="<?php echo htmlspecialchars($post['title']); ?>" required><br><br>
-
-    <label>Content:</label><br>
-    <textarea name="content" rows="8" cols="60" required><?php echo htmlspecialchars($post['content']); ?></textarea><br><br>
-    <p><small>You can use Markdown syntax for formatting (e.g., **bold**, *italic*, # Heading)</small></p>
-
-    <label>Tags:</label><br>
-    <input type="text" name="tags" value="<?php echo htmlspecialchars($post['tags']); ?>"><br><br>
-
-    <label>Cover Image:</label><br>
-    <?php if (!empty($post['cover_image'])): ?>
-        <img src="../uploads/<?php echo htmlspecialchars($post['cover_image']); ?>" width="150"><br>
+    <?php if (!empty($message)): ?>
+        <div class="<?php echo strpos($message, 'Error') === 0 ? 'bg-red-100 border border-red-400 text-red-700' : 'bg-green-100 border border-green-400 text-green-700'; ?> px-6 py-4 rounded-lg mb-6">
+            <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+        </div>
     <?php endif; ?>
-    <input type="file" name="cover_image"><br><br>
 
-    <button type="submit">Update Post</button>
-</form>
+    <form method="POST" enctype="multipart/form-data" class="bg-white shadow-lg rounded-lg p-8 space-y-6">
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Title:</label>
+            <input type="text"
+                name="title"
+                required
+                value="<?php echo htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8'); ?>"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
 
-<p><a href="../index.php">← Back to Home</a></p>
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Content:</label>
+            <textarea name="content"
+                rows="10"
+                required
+                data-markdown-editor="true"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"><?php echo htmlspecialchars($post['content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
+            <p class="text-sm text-gray-500 mt-1">Use Markdown for formatting (e.g., **bold**, *italic*, # Heading)</p>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Tags (comma-separated):</label>
+            <input type="text"
+                name="tags"
+                value="<?php echo htmlspecialchars($post['tags'], ENT_QUOTES, 'UTF-8'); ?>"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Cover Image:</label>
+            <?php if (!empty($post['cover_image'])): ?>
+                <img src="../uploads/<?php echo htmlspecialchars($post['cover_image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Cover image" class="w-40 h-24 object-cover rounded mb-3">
+            <?php endif; ?>
+            <input type="file"
+                name="cover_image"
+                accept="image/*"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <small class="text-gray-500 text-sm mt-1 block">Uploading a new image will replace the existing one.</small>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <a href="../index.php" class="text-sm text-gray-500 hover:text-primary">← Cancel</a>
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                💾 Save Changes
+            </button>
+        </div>
+    </form>
+</div>
 
 <?php include '../includes/footer.php'; ?>

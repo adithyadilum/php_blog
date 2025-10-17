@@ -15,6 +15,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Google Fonts: Inter and GT Super Display Light -->
+    <?php if (!empty($page_extra_head)) {
+        echo $page_extra_head;
+    } ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://db.onlinewebfonts.com/c/685863138475bd81c7e5068082244fc5?family=GT+Super+Display+Light" rel="stylesheet" type="text/css" />
 
@@ -28,10 +31,10 @@ if (session_status() === PHP_SESSION_NONE) {
             theme: {
                 extend: {
                     colors: {
-                        cream: '#FAF6E9', // main background
-                        sand: '#ECE8D9', // secondary background
-                        linen: '#FFFDF6', // content/card background
-                        charcoal: '#494949', // text color
+                        cream: '#FAF6E9', // Primary background  
+                        sand: '#ECE8D9', // Card background 
+                        linen: '#FFFDF6', // Header and section backgrounds  
+                        charcoal: '#494949', // Text and icon color  
                     },
                     fontFamily: {
                         heading: ['"GT Super Display Light"', 'serif'],
@@ -52,7 +55,7 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 
 <body class="bg-gray-50 text-gray-800">
-    <header class="bg-white shadow-md sticky top-0 z-10">
+    <header class="bg-linen sticky top-0 z-10">
         <?php include 'navbar.php'; ?>
     </header>
 
