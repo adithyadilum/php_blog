@@ -1,6 +1,6 @@
 <?php
 include '../includes/header.php';
-include '../includes/config.php';
+require_once __DIR__ . '/../config.php';
 include '../includes/Parsedown.php';
 $Parsedown = new Parsedown();
 

@@ -1,0 +1,16 @@
+# Protect hidden files like .env
+
+<FilesMatch "^\.">
+Require all denied
+</FilesMatch>
+
+<IfModule !mod_authz_core.c>
+<FilesMatch "^\.">
+Order allow,deny
+Deny from all
+</FilesMatch>
+</IfModule>
+
+# Ensure index.php handles directory requests
+
+DirectoryIndex index.php
