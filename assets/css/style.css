@@ -101,3 +101,81 @@ input[type="file"]::file-selector-button:hover,
 input[type="file"]::-webkit-file-upload-button:hover {
     background-color: rgba(73, 73, 73, 0.85);
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
+.btn-major {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #494949 0%, #2f2f2f 50%, #6d6d6d 100%);
+    background-size: 180% 180%;
+    color: #fffdf6 !important;
+    box-shadow: 0 12px 28px rgba(73, 73, 73, 0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: btn-gradient-flow 12s ease infinite;
+    cursor: pointer;
+}
+
+.btn-major:hover,
+.btn-major:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(73, 73, 73, 0.22);
+}
+
+.btn-major:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 24px rgba(73, 73, 73, 0.2);
+}
+
+.story-card {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.3, 0.75, 0.4, 1), box-shadow 0.25s ease;
+}
+
+body.card-animate .story-card {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+}
+
+body.card-animate .story-card.is-visible,
+.story-card.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@keyframes btn-gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .btn-major {
+        animation: none;
+        transform: none !important;
+        transition: none;
+    }
+
+    .story-card {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

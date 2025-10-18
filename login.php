@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->fetch();
 
         if (password_verify($password, $hashed_password)) {
+            unset($_SESSION['guest_access']);
             // Success and store session variables
             $_SESSION['user_id'] = $id;
             $_SESSION['username'] = $username;
@@ -35,8 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php include 'includes/header.php'; ?>
 
-<section class="px-6 py-16">
-    <div class="mx-auto flex max-w-5xl flex-col gap-10 md:flex-row md:items-center">
+<section class="px-6 py-16 flex min-h-[calc(100vh-8rem)] items-center">
+    <div class="mx-auto flex w-full max-w-5xl flex-col gap-10 md:flex-row md:items-center">
         <div class="md:w-1/2 space-y-4 text-center md:text-left">
             <p class="uppercase tracking-[0.4em] text-xs text-charcoal/60">Welcome back</p>
             <h1 class="font-heading text-4xl text-charcoal">Unlock your creative dashboard</h1>
@@ -72,10 +73,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <button type="submit"
-                        class="w-full rounded-full bg-charcoal px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-linen transition hover:bg-opacity-80">
+                        class="btn-major w-full rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em]">
                         Sign In
                     </button>
                 </form>
+
+                <div class="mt-5 flex justify-center">
+                    <a href="index.php?guest=1" class="inline-flex items-center gap-2 rounded-full border border-charcoal/20 bg-white/70 px-5 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-charcoal transition hover:border-charcoal/50 hover:text-charcoal/80">
+                        <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path d="M5 12h14" stroke-linecap="round" />
+                            <path d="M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Explore as guest
+                    </a>
+                </div>
 
                 <p class="mt-6 text-center text-sm text-charcoal/70">
                     New here?

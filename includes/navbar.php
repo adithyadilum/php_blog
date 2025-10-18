@@ -1,9 +1,9 @@
 <nav class="px-4 py-3 md:px-8">
     <div class="max-w-6xl mx-auto">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center justify-between gap-4 md:grid md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-6">
             <a href="/php_blog/index.php" class="font-heading text-xl md:text-xl tracking-[0.35em] text-charcoal uppercase">Paper & Pixels</a>
 
-            <form action="/php_blog/index.php" method="GET" role="search" class="hidden md:flex w-full max-w-md" data-desktop-search>
+            <form action="/php_blog/index.php" method="GET" role="search" class="hidden md:flex w-full max-w-md md:justify-self-center" data-desktop-search>
                 <label class="sr-only" for="desktop-global-search">Search Paper & Pixels</label>
                 <div class="flex w-full items-center gap-3 rounded-full border border-charcoal/10 bg-linen/80 px-5 py-2 shadow-soft transition-all duration-300 focus-within:border-charcoal/40 focus-within:shadow-hover focus-within:ring-2 focus-within:ring-charcoal/15 focus-within:translate-y-[-2px]">
                     <svg class="h-5 w-5 text-charcoal/50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -30,7 +30,7 @@
                 </button>
             </div>
 
-            <div class="hidden md:flex items-center gap-6">
+            <div class="hidden md:flex items-center gap-6 md:justify-self-end">
                 <div class="flex items-center gap-3 text-sm">
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <a href="/php_blog/posts/create.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>

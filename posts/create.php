@@ -103,7 +103,7 @@ include '../includes/header.php';
         <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
             <a href="../index.php" class="text-xs uppercase tracking-[0.3em] text-charcoal/60 hover:text-charcoal">Cancel</a>
             <button type="submit"
-                class="inline-flex items-center gap-3 rounded-full bg-charcoal px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-linen transition hover:bg-opacity-80">
+                class="btn-major inline-flex items-center gap-3 rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em]">
                 <svg aria-hidden="true" class="h-4 w-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                     <path d="M12 19V5m0 0-4 4m4-4 4 4" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M5 19h14" stroke-linecap="round" />

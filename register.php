@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?,?,?,?)");
         $stmt->bind_param("ssss", $username, $email, $password, $role);
         if ($stmt->execute()) {
+            unset($_SESSION['guest_access']);
             $message = "Registration successful! You can now log in.";
         } else {
             $message = "Error: " . $stmt->error;
@@ -32,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php include 'includes/header.php'; ?>
 
-<section class="px-6 py-16">
-    <div class="mx-auto flex max-w-5xl flex-col-reverse gap-10 md:flex-row md:items-center">
+<section class="px-6 py-16 flex min-h-[calc(100vh-8rem)] items-center">
+    <div class="mx-auto flex w-full max-w-5xl flex-col-reverse gap-10 md:flex-row md:items-center">
         <div class="md:w-1/2">
             <div class="rounded-3xl border border-charcoal/10 bg-linen/70 p-8 shadow-soft backdrop-blur">
                 <h2 class="font-heading text-2xl text-charcoal text-center mb-6">Create your account</h2>
@@ -66,8 +67,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="password" name="password" class="w-full rounded-xl border border-charcoal/20 bg-white/70 px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-charcoal/50 focus:bg-white focus:outline-none focus:ring-0 transition" required>
                     </div>
 
-                    <button type="submit" class="w-full rounded-full bg-charcoal px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-linen transition hover:bg-opacity-80">Register</button>
+                    <button type="submit" class="btn-major w-full rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em]">Register</button>
                 </form>
+
+                <div class="mt-5 flex justify-center">
+                    <a href="index.php?guest=1" class="inline-flex items-center gap-2 rounded-full border border-charcoal/20 bg-white/70 px-5 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-charcoal transition hover:border-charcoal/50 hover:text-charcoal/80">
+                        <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path d="M5 12h14" stroke-linecap="round" />
+                            <path d="M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Explore as guest
+                    </a>
+                </div>
 
                 <p class="mt-6 text-center text-sm text-charcoal/70">
                     Already part of the studio?

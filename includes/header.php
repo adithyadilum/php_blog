@@ -3,6 +3,21 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+if (isset($_GET['guest'])) {
+    $_SESSION['guest_access'] = true;
+}
+
+$currentScript = $_SERVER['SCRIPT_NAME'] ?? '';
+$currentPage = basename($currentScript);
+$isAuthPage = in_array($currentPage, ['login.php', 'register.php'], true);
+$isLoggedIn = !empty($_SESSION['user_id']);
+
+if (!$isLoggedIn && !$isAuthPage) {
+    $_SESSION['guest_access'] = true;
+} elseif ($isLoggedIn && !empty($_SESSION['guest_access'])) {
+    unset($_SESSION['guest_access']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PHP Blog</title>
+    <title>Paper & Pixels</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -59,7 +74,22 @@ if (session_status() === PHP_SESSION_NONE) {
     </script>
 </head>
 
-<body class="min-h-screen bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] text-charcoal font-sans antialiased scroll-smooth">
+<body class="min-h-screen bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] text-charcoal font-sans antialiased scroll-smooth flex flex-col">
+
+    <?php if (!$isLoggedIn && !$isAuthPage): ?>
+        <div class="fixed bottom-4 left-4 right-4 z-50 flex justify-center md:bottom-6 md:left-auto md:right-6 md:max-w-sm md:justify-end">
+            <div class="flex w-full flex-col gap-3 rounded-3xl border border-charcoal/12 bg-linen/95 px-6 py-5 text-sm text-charcoal/80 shadow-soft backdrop-blur">
+                <div>
+                    <p class="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-charcoal/60">Guest preview</p>
+                    <p class="mt-1 text-sm leading-relaxed text-charcoal/80">You're viewing Paper & Pixels with limited tools. Sign in to publish posts, save drafts, and show appreciation with likes.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="/php_blog/login.php" class="btn-major inline-flex flex-1 items-center justify-center rounded-full px-4 py-2 text-[0.75rem] font-semibold">Log in</a>
+                    <a href="/php_blog/register.php" class="inline-flex flex-1 items-center justify-center rounded-full border border-charcoal/20 bg-transparent px-4 py-2 text-[0.75rem] font-semibold text-charcoal transition hover:border-charcoal/60">Create account</a>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
     <header class="sticky top-0 z-50 border-b border-cream/50 bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] backdrop-blur-sm shadow-soft">
         <?php include 'navbar.php'; ?>
     </header>

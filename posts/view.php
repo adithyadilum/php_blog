@@ -173,7 +173,7 @@ $post = $result->fetch_assoc();
                     <form method="post" class="space-y-4">
                         <label class="sr-only" for="comment">Write your comment</label>
                         <textarea id="comment" name="comment" rows="4" placeholder="Share your thoughts..." required data-autoresize="true" class="w-full rounded-2xl border border-charcoal/15 bg-white/70 px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-charcoal/40 focus:bg-white focus:outline-none focus:ring-0 transition"></textarea>
-                        <button type="submit" class="inline-flex items-center justify-center rounded-full bg-charcoal px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-linen transition hover:bg-opacity-80">Post Comment</button>
+                        <button type="submit" class="btn-major inline-flex items-center justify-center rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em]">Post Comment</button>
                     </form>
                 <?php else: ?>
                     <p class="text-center text-sm uppercase tracking-[0.25em] text-charcoal/70">Please <a href="../login.php" class="text-charcoal hover:underline">login</a> to comment.</p>

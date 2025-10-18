@@ -2,6 +2,30 @@
 include 'includes/header.php';
 include 'includes/config.php';
 
+$totalPosts = 0;
+$totalUsers = 0;
+
+$postCountResult = $conn->query('SELECT COUNT(*) AS total FROM posts');
+if ($postCountResult instanceof mysqli_result) {
+    $countRow = $postCountResult->fetch_assoc();
+    if ($countRow) {
+        $totalPosts = (int) ($countRow['total'] ?? 0);
+    }
+    $postCountResult->free();
+}
+
+$userCountResult = $conn->query('SELECT COUNT(*) AS total FROM users');
+if ($userCountResult instanceof mysqli_result) {
+    $countRow = $userCountResult->fetch_assoc();
+    if ($countRow) {
+        $totalUsers = (int) ($countRow['total'] ?? 0);
+    }
+    $userCountResult->free();
+}
+
+$postLabel = $totalPosts === 1 ? 'story' : 'stories';
+$userLabel = $totalUsers === 1 ? 'member' : 'members';
+
 $successNotice = '';
 if (isset($_GET['msg'])) {
     $status = $_GET['msg'];
@@ -120,7 +144,7 @@ $availableTags = array_values($availableTags);
         <p class="uppercase tracking-[0.45em] text-[0.65rem] text-charcoal/60">CURATED STORIES FOR MODERN CREATORS</p>
         <h1 class="font-heading text-4xl md:text-5xl text-charcoal">Ideas that bridge creativity and technology</h1>
         <p class="font-sans text-base md:text-lg text-charcoal/70 max-w-2xl mx-auto">Explore stories at the intersection of art, code, and design — where imagination meets logic, and pixels tell as many stories as paper ever did.</p>
-        <a href="#stories" class="mx-auto inline-flex items-center gap-3 rounded-full border border-charcoal/20 bg-linen px-6 py-3 text-xs md:text-sm uppercase tracking-[0.35em] text-charcoal hover:border-charcoal/40 hover:bg-charcoal hover:text-linen transition">
+        <a href="#stories" class="btn-major mx-auto inline-flex items-center gap-3 rounded-full px-6 py-3 text-xs md:text-sm uppercase tracking-[0.35em]">
             Drift Into Stories
             <svg aria-hidden="true" class="h-4 w-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                 <path d="M12 5v14m0 0-5-5m5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
@@ -133,7 +157,7 @@ $availableTags = array_values($availableTags);
 </section>
 
 <section id="stories" class="px-6 pb-16">
-    <div class="max-w-6xl mx-auto space-y-10 bg-linen/60 backdrop-blur-sm rounded-3xl px-6 py-10 shadow-soft">
+    <div class="max-w-6xl mx-auto space-y-10 bg-transparent">
         <div class="flex flex-col gap-6">
             <div class="flex flex-wrap justify-center md:justify-start gap-3">
                 <?php
@@ -152,7 +176,7 @@ $availableTags = array_values($availableTags);
         </div>
 
         <?php if (!empty($posts)): ?>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 <?php foreach ($posts as $post):
                     $postId = (int) $post['id'];
 
@@ -194,7 +218,7 @@ $availableTags = array_values($availableTags);
                         }
                     }
                 ?>
-                    <article class="flex flex-col overflow-hidden rounded-xl bg-linen shadow-soft transition-all duration-300 hover:shadow-hover">
+                    <article class="story-card flex flex-col overflow-hidden rounded-xl bg-linen shadow-soft transition-all duration-300 hover:shadow-hover">
                         <?php if (!empty($post['cover_image'])): ?>
                             <img src="uploads/<?php echo htmlspecialchars($post['cover_image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8'); ?>" class="h-56 w-full object-cover" />
                         <?php else: ?>
@@ -261,10 +285,72 @@ $availableTags = array_values($availableTags);
     </div>
 </section>
 
-<section id="about" class="px-8 py-16">
-    <div class="max-w-4xl mx-auto rounded-3xl bg-linen/60 px-8 py-12 text-center backdrop-blur-sm shadow-soft space-y-4">
-        <h2 class="font-heading text-3xl text-charcoal">About Paper & Pixels</h2>
-        <p class="font-sans text-base md:text-lg text-charcoal/70">Paper & Pixels is a space for thinkers, makers, and dreamers who find beauty in both the tactile and the digital. We write about design, creativity, and the subtle ways technology shapes how we create and connect. Whether it’s code that feels like poetry or visuals that spark emotion, our stories celebrate the craft behind every pixel and page.</p>
+<section id="about" class="px-6 pb-20">
+    <div class="relative mx-auto max-w-6xl overflow-hidden rounded-[2.75rem] border border-charcoal/10 bg-linen/90 px-8 py-16 shadow-soft backdrop-blur">
+        <div class="pointer-events-none absolute inset-0 opacity-[0.88]" style="background: radial-gradient(circle at 12% 18%, rgba(255,255,255,0.95) 0%, rgba(250,246,233,0.65) 38%, rgba(244,237,213,0.4) 70%, rgba(244,237,213,0.05) 100%);"></div>
+        <div class="relative grid gap-12 md:grid-cols-[1.2fr_1fr] md:items-center">
+            <div class="space-y-7 text-center md:text-left">
+                <p class="uppercase tracking-[0.4em] text-[0.65rem] text-charcoal/55">About Paper & Pixels</p>
+                <h2 class="font-heading text-4xl leading-tight text-charcoal md:text-5xl">Where craft meets curiosity</h2>
+                <p class="font-sans text-base md:text-lg text-charcoal/75">Paper & Pixels celebrates the intersection of storytelling and systems thinking. From publishing experiments to process retrospectives, every feature is designed to help modern makers blend tactile craft with digital clarity.</p>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="rounded-2xl border border-charcoal/12 bg-white/70 px-6 py-6 text-left shadow-inner">
+                        <p class="font-heading text-3xl text-charcoal"><?php echo number_format($totalPosts); ?></p>
+                        <p class="mt-2 text-xs uppercase tracking-[0.28em] text-charcoal/60">Stories crafted</p>
+                        <p class="mt-3 text-sm text-charcoal/70">Now home to <?php echo number_format($totalPosts); ?> published <?php echo $postLabel; ?> from designers, developers, and multidisciplinary collaborators.</p>
+                    </div>
+                    <div class="rounded-2xl border border-charcoal/12 bg-white/70 px-6 py-6 text-left shadow-inner">
+                        <p class="font-heading text-3xl text-charcoal"><?php echo number_format($totalUsers); ?></p>
+                        <p class="mt-2 text-xs uppercase tracking-[0.28em] text-charcoal/60">Contributors</p>
+                        <p class="mt-3 text-sm text-charcoal/70">A studio of <?php echo number_format($totalUsers); ?> <?php echo $userLabel; ?> sharing frameworks, annotated sketches, and code-first concepts.</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3 md:justify-start">
+                    <a href="register.php" class="btn-major inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]">
+                        Join the collective
+                        <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path d="M5 12h14" stroke-linecap="round" />
+                            <path d="M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <a href="#stories" class="inline-flex items-center gap-2 rounded-full border border-charcoal/20 bg-white/70 px-6 py-3 text-xs uppercase tracking-[0.3em] text-charcoal transition hover:border-charcoal/45 hover:text-charcoal/80">
+                        Browse stories
+                        <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path d="M5 12h14" stroke-linecap="round" />
+                            <path d="M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="space-y-6 rounded-3xl border border-charcoal/12 bg-white/55 p-8 text-left shadow-soft">
+                <p class="text-xs uppercase tracking-[0.35em] text-charcoal/60">What you'll find inside</p>
+                <ul class="space-y-6 text-sm text-charcoal/75">
+                    <li class="flex gap-4">
+                        <span class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-charcoal text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-linen">01</span>
+                        <div>
+                            <p class="font-semibold uppercase tracking-[0.2em] text-[0.75rem] text-charcoal/80">Studio essays</p>
+                            <p class="mt-1 leading-relaxed text-charcoal/70">Narratives that bridge analog craft, digital tooling, and the rituals that keep ideas flowing.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-charcoal text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-linen">02</span>
+                        <div>
+                            <p class="font-semibold uppercase tracking-[0.2em] text-[0.75rem] text-charcoal/80">Playbooks</p>
+                            <p class="mt-1 leading-relaxed text-charcoal/70">Practical frameworks, checklists, and repeatable rituals to ship thoughtful work.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-charcoal text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-linen">03</span>
+                        <div>
+                            <p class="font-semibold uppercase tracking-[0.2em] text-[0.75rem] text-charcoal/80">Tools & textures</p>
+                            <p class="mt-1 leading-relaxed text-charcoal/70">Curated resources—from component libraries to analog prompts—that inspire the next iteration.</p>
+                        </div>
+                    </li>
+                </ul>
+                <p class="text-xs uppercase tracking-[0.3em] text-charcoal/55">Stay curious, publish boldly, and let your ideas travel from paper to pixels.</p>
+            </div>
+        </div>
     </div>
 </section>
 
