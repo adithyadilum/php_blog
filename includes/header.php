@@ -20,10 +20,13 @@ if (session_status() === PHP_SESSION_NONE) {
     } ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://db.onlinewebfonts.com/c/685863138475bd81c7e5068082244fc5?family=GT+Super+Display+Light" rel="stylesheet" type="text/css" />
+    <link href="https://db.onlinewebfonts.com/c/014bb250446c9521bf247d2c6266d23c?family=GT+Super+Text+Book" rel="stylesheet" type="text/css" />
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com?plugins=typography,line-clamp"></script>
+
+    <link rel="stylesheet" href="/php_blog/assets/css/style.css" />
 
     <!-- Custom Tailwind Config -->
     <script>
@@ -39,10 +42,12 @@ if (session_status() === PHP_SESSION_NONE) {
                     fontFamily: {
                         heading: ['"GT Super Display Light"', 'serif'],
                         sans: ['Inter', 'sans-serif'],
+                        text: ['"GT Super Text Book"', 'serif'],
                     },
                     boxShadow: {
-                        soft: '0 4px 12px rgba(0, 0, 0, 0.04)',
-                        hover: '0 6px 20px rgba(0, 0, 0, 0.08)',
+                        soft: '0 4px 18px rgba(73, 73, 73, 0.08)',
+                        hover: '0 10px 28px rgba(73, 73, 73, 0.12)',
+                        inner: 'inset 0 1px 0 rgba(255,255,255,0.3)',
                     },
                     borderRadius: {
                         xl: '1rem',
@@ -55,7 +60,7 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 
 <body class="min-h-screen bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] text-charcoal font-sans antialiased scroll-smooth">
-    <header class="sticky top-0 z-50 border-b border-cream/50 bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] backdrop-blur-md shadow-soft">
+    <header class="sticky top-0 z-50 border-b border-cream/50 bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] backdrop-blur-sm shadow-soft">
         <?php include 'navbar.php'; ?>
     </header>
 

@@ -1,126 +1,103 @@
-body {
-    font-family: Arial, sans-serif;
-    background: #f8f9fa;
-    margin: 0;
-    padding: 0;
+.font-text {
+    color: #2b2b2b;
+    --tw-prose-body: #2b2b2b;
+    --tw-prose-headings: #2b2b2b;
+    --tw-prose-bold: #2b2b2b;
+    --tw-prose-links: #2b2b2b;
 }
 
-.navbar {
-    background: #333;
+textarea[data-autoresize] {
+    overflow: hidden;
+    resize: none;
+    width: 100%;
+    min-height: 8rem;
+}
+
+textarea[data-autoresize]::placeholder {
+    color: rgba(73, 73, 73, 0.4);
+}
+
+.editor-toolbar {
+    background-color: rgba(255, 253, 246, 0.9);
+    border-radius: 9999px;
+    border: 1px solid rgba(73, 73, 73, 0.15);
+    padding: 0.35rem 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.editor-toolbar a {
+    color: #494949;
+}
+
+.editor-toolbar a:hover {
+    color: rgba(73, 73, 73, 0.7);
+    background-color: rgba(73, 73, 73, 0.08);
+}
+
+.simplemde-container {
+    width: 100%;
+}
+
+.CodeMirror,
+.CodeMirror-scroll {
+    height: auto !important;
+    min-height: 12rem;
+}
+
+.CodeMirror {
+    background: transparent;
+    border: none !important;
+    border-radius: 1.5rem;
+    box-shadow: none !important;
+    padding: 1.5rem 0 !important;
+    font-family: "GT Super Text Book", serif;
+    color: #2b2b2b;
+}
+
+.CodeMirror-scroll {
+    overflow: hidden !important;
+}
+
+.CodeMirror pre {
+    background: transparent !important;
+    font-family: "GT Super Text Book", serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+.CodeMirror-lines {
+    padding: 0 0 2rem 0 !important;
+}
+
+.editor-preview,
+.editor-preview-side {
+    background: transparent;
+    font-family: "GT Super Text Book", serif;
+    color: #2b2b2b;
+    line-height: 1.75;
+    padding: 1.75rem;
+}
+
+.editor-statusbar {
+    font-size: 0.75rem;
+    color: rgba(73, 73, 73, 0.6);
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+    background-color: #494949;
     color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.navbar ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    padding: 20px;
-}
-
-footer {
-    text-align: center;
-    background: #eee;
-    padding: 10px;
-    margin-top: 40px;
-    font-size: 14px;
-}
-
-.posts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.post-card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
-
-.post-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.tags {
-    color: #555;
-    font-size: 14px;
-}
-
-.post-card h3 {
-    margin: 10px 0 5px;
-}
-
-.post-card p {
-    font-size: 15px;
-    color: #444;
-}
-
-.single-post {
-    max-width: 800px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.single-post .cover-image {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.single-post h1 {
-    margin-bottom: 10px;
-}
-
-.single-post .meta {
-    color: #777;
-    font-size: 14px;
-}
-
-.single-post .tags {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #555;
-}
-
-.single-post .content {
-    margin-top: 20px;
-    line-height: 1.6;
-    font-size: 16px;
-}
-
-.search-form {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.search-form input {
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+input[type="file"]::file-selector-button:hover,
+input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: rgba(73, 73, 73, 0.85);
 }

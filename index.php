@@ -6,11 +6,41 @@ $successNotice = '';
 if (isset($_GET['msg'])) {
     $status = $_GET['msg'];
     if ($status === 'created') {
-        $successNotice = '<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft"><span class="text-xl">🎉</span><span class="font-medium">Post created successfully</span></div>';
+        $successNotice = <<<HTML
+<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft">
+    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/10">
+        <svg aria-hidden="true" class="h-5 w-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v8M8 12h8" stroke-linecap="round" />
+        </svg>
+    </span>
+    <span class="font-medium">Post created successfully</span>
+</div>
+HTML;
     } elseif ($status === 'updated') {
-        $successNotice = '<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft"><span class="text-xl">✨</span><span class="font-medium">Post updated successfully</span></div>';
+        $successNotice = <<<HTML
+<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft">
+    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/10">
+        <svg aria-hidden="true" class="h-5 w-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </span>
+    <span class="font-medium">Post updated successfully</span>
+</div>
+HTML;
     } elseif ($status === 'deleted') {
-        $successNotice = '<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft"><span class="text-xl">🗑️</span><span class="font-medium">Post deleted successfully</span></div>';
+        $successNotice = <<<HTML
+<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft">
+    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/10">
+        <svg aria-hidden="true" class="h-5 w-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M8 12h8" stroke-linecap="round" />
+        </svg>
+    </span>
+    <span class="font-medium">Post deleted successfully</span>
+</div>
+HTML;
     }
 }
 
@@ -92,7 +122,9 @@ $availableTags = array_values($availableTags);
         <p class="font-sans text-base md:text-lg text-charcoal/70 max-w-2xl mx-auto">Explore stories at the intersection of art, code, and design — where imagination meets logic, and pixels tell as many stories as paper ever did.</p>
         <a href="#stories" class="mx-auto inline-flex items-center gap-3 rounded-full border border-charcoal/20 bg-linen px-6 py-3 text-xs md:text-sm uppercase tracking-[0.35em] text-charcoal hover:border-charcoal/40 hover:bg-charcoal hover:text-linen transition">
             Drift Into Stories
-            <span aria-hidden="true" class="text-base">↓</span>
+            <svg aria-hidden="true" class="h-4 w-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                <path d="M12 5v14m0 0-5-5m5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
         </a>
         <?php if ($contextMessage): ?>
             <p class="text-xs uppercase tracking-[0.4em] text-charcoal/60"><?php echo $contextMessage; ?></p>
@@ -162,7 +194,7 @@ $availableTags = array_values($availableTags);
                         }
                     }
                 ?>
-                    <article class="flex flex-col overflow-hidden rounded-2xl bg-linen shadow-soft transition-all duration-300 hover:shadow-hover">
+                    <article class="flex flex-col overflow-hidden rounded-xl bg-linen shadow-soft transition-all duration-300 hover:shadow-hover">
                         <?php if (!empty($post['cover_image'])): ?>
                             <img src="uploads/<?php echo htmlspecialchars($post['cover_image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8'); ?>" class="h-56 w-full object-cover" />
                         <?php else: ?>
@@ -195,30 +227,26 @@ $availableTags = array_values($availableTags);
                             <div class="mt-auto pt-6 flex items-center justify-between border-t border-sand/70">
                                 <?php if (isset($_SESSION['user_id'])): ?>
                                     <button class="like-btn inline-flex items-center gap-2 rounded-full border border-sand/80 px-4 py-2 text-sm font-medium transition <?php echo $user_liked ? 'bg-charcoal text-linen border-charcoal' : 'bg-sand/60 text-charcoal hover:bg-charcoal hover:text-linen'; ?>" data-post-id="<?php echo $postId; ?>" onclick="toggleLike(<?php echo $postId; ?>)">
-                                        <span>❤</span>
+                                        <svg aria-hidden="true" class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                                            <path d="M11.645 20.205l-.007-.004C5.986 15.88 2.5 12.634 2.5 8.75 2.5 6.126 4.57 4 7.25 4a4.5 4.5 0 0 1 3.75 1.97A4.5 4.5 0 0 1 14.75 4c2.68 0 4.75 2.126 4.75 4.75 0 3.883-3.486 7.13-9.138 11.456l-.007.004-.005.004a.75.75 0 0 1-.894 0l-.005-.004Z" fill="currentColor" />
+                                        </svg>
                                         <span class="like-count"><?php echo $like_count; ?></span>
                                     </button>
                                 <?php else: ?>
                                     <span class="inline-flex items-center gap-2 rounded-full border border-sand/80 bg-sand/50 px-4 py-2 text-sm font-medium text-charcoal/60">
-                                        <span>❤</span>
+                                        <svg aria-hidden="true" class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                                            <path d="M11.645 20.205l-.007-.004C5.986 15.88 2.5 12.634 2.5 8.75 2.5 6.126 4.57 4 7.25 4a4.5 4.5 0 0 1 3.75 1.97A4.5 4.5 0 0 1 14.75 4c2.68 0 4.75 2.126 4.75 4.75 0 3.883-3.486 7.13-9.138 11.456l-.007.004-.005.004a.75.75 0 0 1-.894 0l-.005-.004Z" fill="currentColor" />
+                                        </svg>
                                         <span class="like-count"><?php echo $like_count; ?></span>
                                     </span>
                                 <?php endif; ?>
 
-                                <div class="flex items-center gap-3">
-                                    <?php
-                                    $isOwner = isset($_SESSION['user_id']) && $_SESSION['user_id'] == $post['user_id'];
-                                    $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
-                                    if ($isOwner || $isAdmin):
-                                    ?>
-                                        <a href="posts/edit.php?id=<?php echo $postId; ?>" class="text-xs uppercase tracking-[0.25em] text-charcoal/80 hover:text-charcoal transition">Edit</a>
-                                        <a href="posts/delete.php?id=<?php echo $postId; ?>" class="text-xs uppercase tracking-[0.25em] text-charcoal/80 hover:text-red-500 transition" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
-                                    <?php endif; ?>
-                                    <a href="posts/view.php?id=<?php echo $postId; ?>" class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-charcoal hover:opacity-70 transition">
-                                        Read story
-                                        <span aria-hidden="true">→</span>
-                                    </a>
-                                </div>
+                                <a href="posts/view.php?id=<?php echo $postId; ?>" class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-charcoal hover:opacity-70 transition">
+                                    Read story
+                                    <svg aria-hidden="true" class="h-3 w-3 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </a>
                             </div>
                         </div>
                     </article>

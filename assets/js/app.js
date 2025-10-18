@@ -1,8 +1,51 @@
 (function () {
     const TOGGLE_URL = '/php_blog/api/toggle_like.php';
-    const ACTIVE_CLASSES = ['bg-red-50', 'border-red-400', 'text-red-600'];
-    const INACTIVE_CLASSES = ['bg-gray-100', 'border-gray-300', 'text-gray-700'];
-    const INACTIVE_HOVER = ['hover:bg-red-50', 'hover:border-red-400'];
+    const ACTIVE_CLASSES = ['bg-charcoal', 'text-linen', 'border-charcoal'];
+    const INACTIVE_CLASSES = ['bg-sand/60', 'text-charcoal', 'border-sand/80'];
+    const INACTIVE_HOVER = ['hover:bg-charcoal', 'hover:text-linen'];
+
+    function autoResizeTextarea(element) {
+        if (!element) {
+            return;
+        }
+
+        element.style.height = 'auto';
+        element.style.height = `${element.scrollHeight}px`;
+    }
+
+    function initTextareaAutoresize() {
+        document.querySelectorAll('textarea[data-autoresize]').forEach((textarea) => {
+            if (textarea.dataset.autoresizeInitialized === 'true') {
+                autoResizeTextarea(textarea);
+                return;
+            }
+
+            textarea.dataset.autoresizeInitialized = 'true';
+            autoResizeTextarea(textarea);
+            textarea.addEventListener('input', () => autoResizeTextarea(textarea));
+        });
+    }
+
+    function adjustMarkdownHeight(editor) {
+        if (!editor || !editor.codemirror) {
+            return;
+        }
+
+        const scroller = editor.codemirror.getScrollerElement();
+        const wrapper = editor.codemirror.getWrapperElement();
+
+        if (!scroller || !wrapper) {
+            return;
+        }
+
+        scroller.style.height = 'auto';
+        wrapper.style.height = 'auto';
+        scroller.style.overflow = 'hidden';
+
+        const newHeight = Math.max(scroller.scrollHeight, 240);
+        scroller.style.height = `${newHeight}px`;
+        wrapper.style.height = `${newHeight}px`;
+    }
 
     function removeClasses(target, classes) {
         classes.forEach((name) => target.classList.remove(name));
@@ -102,14 +145,23 @@
                 },
             });
 
+            editor.codemirror.setOption('lineWrapping', true);
+            editor.codemirror.refresh();
+            adjustMarkdownHeight(editor);
+
             // Ensure the underlying textarea stays in sync for form submissions
             editor.codemirror.on('change', () => {
                 editor.codemirror.save();
+                adjustMarkdownHeight(editor);
             });
+
+            editor.codemirror.on('refresh', () => adjustMarkdownHeight(editor));
 
             // Populate initial value in case the textarea started with content
             editor.codemirror.save();
         });
+
+        initTextareaAutoresize();
 
         return true;
     }
@@ -117,26 +169,7 @@
     window.initMarkdownEditors = initMarkdownEditors;
 
     document.addEventListener('DOMContentLoaded', () => {
-        const detailButton = document.querySelector('#like-btn[data-post]');
-        if (detailButton) {
-            const postId = detailButton.getAttribute('data-post');
-            const labelEl = detailButton.querySelector('.like-label');
-            const countElContainer = document.querySelector('#like-count span');
-
-            detailButton.addEventListener('click', () => {
-                withLoading(detailButton, () => sendToggleRequest(postId)
-                    .then((data) => {
-                        handleResponse(detailButton, data, {
-                            countEl: countElContainer,
-                            labelEl,
-                        });
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        alert(error.message || 'Failed to update like');
-                    }));
-            });
-        }
+        initTextareaAutoresize();
 
         if (!initMarkdownEditors()) {
             window.addEventListener('load', initMarkdownEditors, { once: true });
