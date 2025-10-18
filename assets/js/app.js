@@ -1,5 +1,5 @@
 (function () {
-    const TOGGLE_URL = '/php_blog/api/toggle_like.php';
+    const TOGGLE_URL = 'api/toggle_like.php';
     const ACTIVE_CLASSES = ['bg-charcoal', 'text-linen', 'border-charcoal'];
     const INACTIVE_CLASSES = ['bg-sand/60', 'text-charcoal', 'border-sand/80'];
     const INACTIVE_HOVER = ['hover:bg-charcoal', 'hover:text-linen'];

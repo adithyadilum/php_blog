@@ -38,7 +38,7 @@ $post = $result->fetch_assoc();
         <div class="space-y-6 text-center">
             <?php if (!empty($post['cover_image'])): ?>
                 <div class="overflow-hidden rounded-3xl">
-                    <img src="../uploads/<?php echo htmlspecialchars($post['cover_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="h-96 w-full object-cover" />
+                    <img src="uploads/<?php echo htmlspecialchars($post['cover_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="h-96 w-full object-cover" />
                 </div>
             <?php endif; ?>
 
@@ -57,7 +57,7 @@ $post = $result->fetch_assoc();
                                 continue;
                             }
                         ?>
-                            <a href="../index.php?tag=<?php echo urlencode($tag); ?>" class="text-xs uppercase tracking-[0.25em] rounded-full border border-charcoal/15 bg-linen/70 px-4 py-2 text-charcoal/80 transition hover:border-charcoal/40 hover:text-charcoal">
+                            <a href="index.php?tag=<?php echo urlencode($tag); ?>" class="text-xs uppercase tracking-[0.25em] rounded-full border border-charcoal/15 bg-linen/70 px-4 py-2 text-charcoal/80 transition hover:border-charcoal/40 hover:text-charcoal">
                                 #<?php echo htmlspecialchars(ltrim($tag, '#')); ?>
                             </a>
                         <?php endforeach; ?>
@@ -122,12 +122,12 @@ $post = $result->fetch_assoc();
                 <?php endif; ?>
 
                 <?php if (!isset($_SESSION['user_id'])): ?>
-                    <a href="../auth/login.php" class="text-xs uppercase tracking-[0.25em] text-charcoal/70 hover:text-charcoal">Login to like</a>
+                    <a href="auth/login.php" class="text-xs uppercase tracking-[0.25em] text-charcoal/70 hover:text-charcoal">Login to like</a>
                 <?php endif; ?>
             </div>
 
             <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.25em]">
-                <a href="../index.php" class="text-charcoal hover:underline">Back to home</a>
+                <a href="index.php" class="text-charcoal hover:underline">Back to home</a>
                 <?php if ($isOwner || $isAdmin): ?>
                     <a href="edit.php?id=<?php echo $post_id; ?>" class="text-charcoal/80 hover:text-charcoal transition">Edit story</a>
                     <a href="delete.php?id=<?php echo $post_id; ?>" class="text-red-500 hover:text-red-600 transition" onclick="return confirm('Are you sure you want to delete this post?');">Delete story</a>
@@ -139,7 +139,7 @@ $post = $result->fetch_assoc();
         // Handle new comment
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
             if (!isset($_SESSION['user_id'])) {
-                echo "<p class='text-center text-sm text-red-500'>Please <a class=\"underline\" href='../auth/login.php'>login</a> to comment.</p>";
+                echo "<p class='text-center text-sm text-red-500'>Please <a class=\"underline\" href='auth/login.php'>login</a> to comment.</p>";
             } else {
                 $comment = trim($_POST['comment']);
                 $user_id = $_SESSION['user_id'];
@@ -176,7 +176,7 @@ $post = $result->fetch_assoc();
                         <button type="submit" class="btn-major inline-flex items-center justify-center rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em]">Post Comment</button>
                     </form>
                 <?php else: ?>
-                    <p class="text-center text-sm uppercase tracking-[0.25em] text-charcoal/70">Please <a href="../auth/login.php" class="text-charcoal hover:underline">login</a> to comment.</p>
+                    <p class="text-center text-sm uppercase tracking-[0.25em] text-charcoal/70">Please <a href="auth/login.php" class="text-charcoal hover:underline">login</a> to comment.</p>
                 <?php endif; ?>
 
                 <div class="space-y-6">

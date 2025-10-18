@@ -51,6 +51,11 @@ if (!empty($_SESSION['flash_toast']) && is_array($_SESSION['flash_toast'])) {
         $flashToast = null;
     }
 }
+
+$docRootReal = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? __DIR__ . '/..'));
+$appRootReal = str_replace('\\', '/', realpath(__DIR__ . '/..'));
+$relativeRoot = trim(str_replace($docRootReal, '', $appRootReal), '/');
+$appBaseHref = '/' . ($relativeRoot !== '' ? $relativeRoot . '/' : '');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,6 +64,7 @@ if (!empty($_SESSION['flash_toast']) && is_array($_SESSION['flash_toast'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paper & Pixels</title>
+    <base href="<?php echo htmlspecialchars($appBaseHref, ENT_QUOTES, 'UTF-8'); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -74,9 +80,9 @@ if (!empty($_SESSION['flash_toast']) && is_array($_SESSION['flash_toast'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com?plugins=typography,line-clamp"></script>
 
-    <link rel="stylesheet" href="/php_blog/assets/css/style.css" />
-    <link rel="icon" type="image/svg+xml" href="/php_blog/assets/images/favicon.svg" />
-    <link rel="alternate icon" href="/php_blog/assets/images/favicon.svg" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+    <link rel="alternate icon" href="assets/images/favicon.svg" />
 
     <!-- Custom Tailwind Config -->
     <script>
@@ -109,7 +115,7 @@ if (!empty($_SESSION['flash_toast']) && is_array($_SESSION['flash_toast'])) {
     </script>
 </head>
 
-<body class="min-h-screen bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] text-charcoal font-sans antialiased scroll-smooth flex flex-col">
+<body class="min-h-screen bg-[radial-gradient(circle_at_10%_20%,_rgba(255,255,255,0.95)_0%,_rgba(250,246,233,0.75)_45%,_rgba(244,237,213,0.6)_90%)] text-charcoal font-sans antialiased scroll-smooth flex flex-col" data-base-url="<?php echo htmlspecialchars($appBaseHref, ENT_QUOTES, 'UTF-8'); ?>">
 
     <?php if ($flashToast && $flashToastMessage !== ''): ?>
         <div data-toast class="toast-notification <?php echo htmlspecialchars($flashToastType, ENT_QUOTES, 'UTF-8'); ?>" role="alert">
@@ -145,8 +151,8 @@ if (!empty($_SESSION['flash_toast']) && is_array($_SESSION['flash_toast'])) {
                     <p class="mt-1 text-sm leading-relaxed text-charcoal/80">You're viewing Paper & Pixels with limited tools. Sign in to publish posts, save drafts, and show appreciation with likes.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <a href="/php_blog/auth/login.php" class="btn-major inline-flex flex-1 items-center justify-center rounded-full px-4 py-2 text-[0.75rem] font-semibold">Log in</a>
-                    <a href="/php_blog/auth/register.php" class="inline-flex flex-1 items-center justify-center rounded-full border border-charcoal/20 bg-transparent px-4 py-2 text-[0.75rem] font-semibold text-charcoal transition hover:border-charcoal/60">Create account</a>
+                    <a href="auth/login.php" class="btn-major inline-flex flex-1 items-center justify-center rounded-full px-4 py-2 text-[0.75rem] font-semibold">Log in</a>
+                    <a href="auth/register.php" class="inline-flex flex-1 items-center justify-center rounded-full border border-charcoal/20 bg-transparent px-4 py-2 text-[0.75rem] font-semibold text-charcoal transition hover:border-charcoal/60">Create account</a>
                 </div>
             </div>
         </div>

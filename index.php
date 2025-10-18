@@ -252,10 +252,10 @@ $availableTags = array_values($availableTags);
                 $isAllActive = empty($tagFilter) && empty($search);
                 $pillBase = 'px-4 py-2 rounded-full border text-xs uppercase tracking-[0.28em] transition';
                 ?>
-                <a href="/php_blog/index.php" class="<?php echo $pillBase . ' ' . ($isAllActive ? 'bg-charcoal text-linen border-charcoal' : 'bg-linen border-sand/70 text-charcoal hover:border-charcoal/50 hover:text-charcoal/80'); ?>">All</a>
+                <a href="index.php" class="<?php echo $pillBase . ' ' . ($isAllActive ? 'bg-charcoal text-linen border-charcoal' : 'bg-linen border-sand/70 text-charcoal hover:border-charcoal/50 hover:text-charcoal/80'); ?>">All</a>
                 <?php foreach ($availableTags as $tag):
                     $isActive = $tagFilter && strcasecmp($tagFilter, $tag) === 0;
-                    $href = '/php_blog/index.php?tag=' . urlencode($tag);
+                    $href = 'index.php?tag=' . urlencode($tag);
                     $classes = $pillBase . ' ' . ($isActive ? 'bg-charcoal text-linen border-charcoal' : 'bg-linen border-sand/70 text-charcoal hover:border-charcoal/50 hover:text-charcoal/80');
                 ?>
                     <a href="<?php echo $href; ?>" class="<?php echo $classes; ?>">#<?php echo htmlspecialchars(ltrim($tag, '#'), ENT_QUOTES, 'UTF-8'); ?></a>
@@ -329,7 +329,7 @@ $availableTags = array_values($availableTags);
                             <?php if (!empty($tagPills)): ?>
                                 <div class="mt-5 flex flex-wrap gap-2">
                                     <?php foreach ($tagPills as $tag): ?>
-                                        <a href="/php_blog/index.php?tag=<?php echo urlencode($tag); ?>" class="text-xs bg-sand text-charcoal rounded-full px-3 py-1 tracking-[0.15em] uppercase">
+                                        <a href="index.php?tag=<?php echo urlencode($tag); ?>" class="text-xs bg-sand text-charcoal rounded-full px-3 py-1 tracking-[0.15em] uppercase">
                                             #<?php echo htmlspecialchars(ltrim($tag, '#'), ENT_QUOTES, 'UTF-8'); ?>
                                         </a>
                                     <?php endforeach; ?>
@@ -367,7 +367,7 @@ $availableTags = array_values($availableTags);
         <?php else: ?>
             <div class="rounded-2xl bg-linen px-8 py-12 text-center text-charcoal/70 shadow-soft">
                 <p class="font-heading text-2xl">No stories yet</p>
-                <p class="mt-3 text-sm md:text-base">Start the first chapter by <a href="/php_blog/posts/create.php" class="underline underline-offset-4">writing a story</a>.</p>
+                <p class="mt-3 text-sm md:text-base">Start the first chapter by <a href="posts/create.php" class="underline underline-offset-4">writing a story</a>.</p>
             </div>
         <?php endif; ?>
     </div>
@@ -394,7 +394,7 @@ $availableTags = array_values($availableTags);
                     </div>
                 </div>
                 <div class="flex flex-wrap justify-center gap-3 md:justify-start">
-                    <a href="/php_blog/auth/register.php" class="btn-major inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]">
+                    <a href="auth/register.php" class="btn-major inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]">
                         Join the collective
                         <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                             <path d="M5 12h14" stroke-linecap="round" />

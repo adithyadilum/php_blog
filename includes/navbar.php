@@ -1,9 +1,9 @@
 <nav class="px-4 py-3 md:px-8">
     <div class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between gap-4 md:grid md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-6">
-            <a href="/php_blog/index.php" class="font-heading text-xl md:text-xl tracking-[0.35em] text-charcoal uppercase">Paper & Pixels</a>
+            <a href="index.php" class="font-heading text-xl md:text-xl tracking-[0.35em] text-charcoal uppercase">Paper & Pixels</a>
 
-            <form action="/php_blog/index.php" method="GET" role="search" class="hidden md:flex w-full max-w-md md:justify-self-center" data-desktop-search>
+            <form action="index.php" method="GET" role="search" class="hidden md:flex w-full max-w-md md:justify-self-center" data-desktop-search>
                 <label class="sr-only" for="desktop-global-search">Search Paper & Pixels</label>
                 <div class="flex w-full items-center gap-3 rounded-full border border-charcoal/10 bg-linen/80 px-5 py-2 shadow-soft transition-all duration-300 focus-within:border-charcoal/40 focus-within:shadow-hover focus-within:ring-2 focus-within:ring-charcoal/15 focus-within:translate-y-[-2px]">
                     <svg class="h-5 w-5 text-charcoal/50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -33,18 +33,18 @@
             <div class="hidden md:flex items-center gap-6 md:justify-self-end">
                 <div class="flex items-center gap-3 text-sm">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="/php_blog/posts/create.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>
-                        <a href="/php_blog/auth/logout.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Logout</a>
+                        <a href="posts/create.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>
+                        <a href="auth/logout.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Logout</a>
                     <?php else: ?>
-                        <a href="/php_blog/auth/login.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
-                        <a href="/php_blog/auth/register.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Join the Journal</a>
+                        <a href="auth/login.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
+                        <a href="auth/register.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Join the Journal</a>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <div id="mobile-search" class="mt-3 hidden" data-mobile-search>
-            <form action="/php_blog/index.php" method="GET" role="search" class="w-full">
+            <form action="index.php" method="GET" role="search" class="w-full">
                 <label class="sr-only" for="mobile-global-search">Search Paper & Pixels</label>
                 <div class="flex items-center gap-3 rounded-2xl border border-charcoal/10 bg-linen/80 px-5 py-3 shadow-soft transition-all duration-300 focus-within:border-charcoal/40 focus-within:shadow-hover focus-within:ring-2 focus-within:ring-charcoal/15">
                     <svg class="h-5 w-5 text-charcoal/50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -59,11 +59,11 @@
         <div id="mobile-menu" class="mt-3 hidden space-y-4" data-mobile-menu>
             <div class="flex flex-col gap-3 text-sm">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="/php_blog/posts/create.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>
-                    <a href="/php_blog/auth/logout.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Logout</a>
+                    <a href="posts/create.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>
+                    <a href="auth/logout.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Logout</a>
                 <?php else: ?>
-                    <a href="/php_blog/auth/login.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
-                    <a href="/php_blog/auth/register.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Join the Journal</a>
+                    <a href="auth/login.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
+                    <a href="auth/register.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Join the Journal</a>
                 <?php endif; ?>
             </div>
         </div>

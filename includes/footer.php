@@ -22,7 +22,7 @@
           <p class="text-xs uppercase tracking-[0.3em] text-charcoal/55">Explore</p>
           <div class="flex flex-wrap gap-4 text-xs uppercase tracking-[0.28em]">
             <a href="#stories" class="hover:text-charcoal transition">Stories</a>
-            <a href="/php_blog/posts/create.php" class="hover:text-charcoal transition">Publish</a>
+            <a href="posts/create.php" class="hover:text-charcoal transition">Publish</a>
             <a href="#contact" class="hover:text-charcoal transition">Contact</a>
           </div>
         </div>
@@ -43,7 +43,7 @@
   <?php if (!empty($page_extra_scripts)) {
     echo $page_extra_scripts;
   } ?>
-  <script src="/php_blog/assets/js/app.js"></script>
+  <script src="assets/js/app.js"></script>
   </body>
 
   </html>
