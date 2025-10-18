@@ -75,6 +75,8 @@ if (!empty($_SESSION['flash_toast']) && is_array($_SESSION['flash_toast'])) {
     <script src="https://cdn.tailwindcss.com?plugins=typography,line-clamp"></script>
 
     <link rel="stylesheet" href="/php_blog/assets/css/style.css" />
+    <link rel="icon" type="image/svg+xml" href="/php_blog/assets/images/favicon.svg" />
+    <link rel="alternate icon" href="/php_blog/assets/images/favicon.svg" />
 
     <!-- Custom Tailwind Config -->
     <script>
