@@ -13,10 +13,10 @@ $user_role = $_SESSION['role'] ?? 'user';
 $isAdmin = ($user_role === 'admin');
 
 // Get post owner
-$stmt = $conn->prepare("SELECT user_id FROM posts WHERE id=?");
+$stmt = $conn->prepare("SELECT user_id, cover_image FROM posts WHERE id=?");
 $stmt->bind_param("i", $post_id);
 $stmt->execute();
-$stmt->bind_result($owner_id);
+$stmt->bind_result($owner_id, $cover_image);
 if (!$stmt->fetch()) {
     $stmt->close();
     header("Location: ../index.php");
@@ -26,7 +26,13 @@ $stmt->close();
 
 // Access control
 if (!$isAdmin && $user_id != $owner_id) {
-    die("Unauthorized: You don't have permission to delete this post.");
+    $_SESSION['flash_toast'] = [
+        'message' => 'Unauthorized',
+        'type' => 'toast-error',
+        'icon' => 'error',
+    ];
+    header("Location: ../index.php");
+    exit;
 }
 
 // Perform deletion
@@ -39,9 +45,21 @@ if ($isAdmin) {
 }
 
 if ($stmt->execute() && $stmt->affected_rows > 0) {
+    if (!empty($cover_image)) {
+        $imagePath = dirname(__DIR__) . '/uploads/' . basename($cover_image);
+        if (is_file($imagePath)) {
+            @unlink($imagePath);
+        }
+    }
     header("Location: ../index.php?msg=deleted");
     exit;
 } else {
-    echo "Error: You are not authorized to delete this post or it does not exist.";
+    $_SESSION['flash_toast'] = [
+        'message' => 'Unauthorized',
+        'type' => 'toast-error',
+        'icon' => 'error',
+    ];
+    header("Location: ../index.php");
+    exit;
 }
 $stmt->close();

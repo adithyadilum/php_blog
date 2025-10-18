@@ -432,5 +432,57 @@
         window.addEventListener('wheel', cancelScrollAnimation, { passive: true });
         window.addEventListener('touchmove', cancelScrollAnimation, { passive: true });
         window.addEventListener('keydown', cancelScrollAnimation);
+
+        (function initToasts() {
+            const toastNodes = document.querySelectorAll('[data-toast]');
+            if (!toastNodes.length) {
+                return;
+            }
+
+            const stackId = 'toast-stack';
+            let stack = document.getElementById(stackId);
+            if (!stack) {
+                stack = document.createElement('div');
+                stack.id = stackId;
+                stack.className = 'toast-stack';
+                document.body.appendChild(stack);
+            }
+
+            const defaultDismiss = 4200;
+            const staggerDelay = 120;
+
+            toastNodes.forEach((toast, index) => {
+                if (toast.parentElement !== stack) {
+                    stack.appendChild(toast);
+                }
+
+                ['mb-4', 'mx-auto', 'max-w-md', 'pointer-events-auto'].forEach((cls) => toast.classList.remove(cls));
+                toast.setAttribute('aria-live', toast.getAttribute('role') === 'alert' ? 'assertive' : 'polite');
+
+                window.setTimeout(() => {
+                    toast.classList.add('show');
+                }, staggerDelay * index);
+
+                const duration = Number(toast.dataset.toastDuration || defaultDismiss);
+
+                const timeoutId = window.setTimeout(() => {
+                    toast.classList.remove('show');
+                    window.setTimeout(() => {
+                        toast.remove();
+                    }, 380);
+                }, duration + staggerDelay * index);
+
+                toast.dataset.toastTimeout = timeoutId;
+
+                toast.addEventListener('click', () => {
+                    toast.classList.remove('show');
+                    window.setTimeout(() => toast.remove(), 220);
+                    const activeTimeout = toast.dataset.toastTimeout;
+                    if (activeTimeout) {
+                        window.clearTimeout(Number(activeTimeout));
+                    }
+                });
+            });
+        })();
     });
 })();

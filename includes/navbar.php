@@ -34,10 +34,10 @@
                 <div class="flex items-center gap-3 text-sm">
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <a href="/php_blog/posts/create.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>
-                        <a href="/php_blog/logout.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Logout</a>
+                        <a href="/php_blog/auth/logout.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Logout</a>
                     <?php else: ?>
-                        <a href="/php_blog/login.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
-                        <a href="/php_blog/register.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Join the Journal</a>
+                        <a href="/php_blog/auth/login.php" class="px-4 py-2 rounded-full border border-charcoal/30 text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
+                        <a href="/php_blog/auth/register.php" class="px-4 py-2 rounded-full bg-charcoal text-linen transition hover:bg-opacity-80">Join the Journal</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -60,10 +60,10 @@
             <div class="flex flex-col gap-3 text-sm">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="/php_blog/posts/create.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Write a Story</a>
-                    <a href="/php_blog/logout.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Logout</a>
+                    <a href="/php_blog/auth/logout.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Logout</a>
                 <?php else: ?>
-                    <a href="/php_blog/login.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
-                    <a href="/php_blog/register.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Join the Journal</a>
+                    <a href="/php_blog/auth/login.php" class="rounded-full border border-charcoal/30 px-4 py-3 text-center text-charcoal/80 transition hover:border-charcoal/60 hover:text-charcoal">Login</a>
+                    <a href="/php_blog/auth/register.php" class="rounded-full bg-charcoal px-4 py-3 text-center text-linen transition hover:bg-opacity-80">Join the Journal</a>
                 <?php endif; ?>
             </div>
         </div>

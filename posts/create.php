@@ -14,11 +14,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cover_image = null;
     if (!empty($_FILES['cover_image']['name'])) {
         $target_dir = "../uploads/";
-        $file_name = basename($_FILES["cover_image"]["name"]);
+        $originalName = basename($_FILES['cover_image']['name']);
+        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $uniqueName = uniqid('cover_', true);
+        $file_name = $extension ? $uniqueName . '.' . $extension : $uniqueName;
         $target_file = $target_dir . $file_name;
 
-        // Move uploaded file to uploads folder
-        if (move_uploaded_file($_FILES["cover_image"]["tmp_name"], $target_file)) {
+        if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $target_file)) {
             $cover_image = $file_name;
         } else {
             $message = "Failed to upload image!";
@@ -30,7 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("issss", $user_id, $title, $content, $tags, $cover_image);
 
     if ($stmt->execute()) {
-        header("Location: ../index.php?msg=created");
+        $newPostId = $conn->insert_id;
+        header("Location: view.php?id=" . $newPostId);
         exit;
     } else {
         $message = "Error: " . $stmt->error;
@@ -49,8 +52,16 @@ include '../includes/header.php';
             <p class="uppercase tracking-[0.4em] text-xs text-charcoal/60">Start a new chapter</p>
 
             <?php if (!empty($message)): ?>
-                <div class="mx-auto max-w-md rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">
-                    <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+                <div data-toast class="toast-notification toast-error" role="alert">
+                    <span class="toast-icon">
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M15 9L9 15" stroke-linecap="round" />
+                            <path d="M9 9l6 6" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                    <div class="toast-message">
+                        <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
                 </div>
             <?php endif; ?>
 

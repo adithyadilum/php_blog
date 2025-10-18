@@ -26,45 +26,27 @@ if ($userCountResult instanceof mysqli_result) {
 $postLabel = $totalPosts === 1 ? 'story' : 'stories';
 $userLabel = $totalUsers === 1 ? 'member' : 'members';
 
-$successNotice = '';
+$toastMessage = '';
+$toastType = 'toast-info';
+$toastIcon = 'info';
 if (isset($_GET['msg'])) {
     $status = $_GET['msg'];
     if ($status === 'created') {
-        $successNotice = <<<HTML
-<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft">
-    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/10">
-        <svg aria-hidden="true" class="h-5 w-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 8v8M8 12h8" stroke-linecap="round" />
-        </svg>
-    </span>
-    <span class="font-medium">Post created successfully</span>
-</div>
-HTML;
+        $toastMessage = 'Post created successfully';
+        $toastType = 'toast-success';
+        $toastIcon = 'plus';
     } elseif ($status === 'updated') {
-        $successNotice = <<<HTML
-<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft">
-    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/10">
-        <svg aria-hidden="true" class="h-5 w-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-    </span>
-    <span class="font-medium">Post updated successfully</span>
-</div>
-HTML;
+        $toastMessage = 'Post updated successfully';
+        $toastType = 'toast-success';
+        $toastIcon = 'check';
     } elseif ($status === 'deleted') {
-        $successNotice = <<<HTML
-<div class="max-w-xl mx-auto flex items-center gap-3 rounded-full bg-linen/90 border border-sand/70 px-5 py-3 text-sm text-charcoal shadow-soft">
-    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/10">
-        <svg aria-hidden="true" class="h-5 w-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M8 12h8" stroke-linecap="round" />
-        </svg>
-    </span>
-    <span class="font-medium">Post deleted successfully</span>
-</div>
-HTML;
+        $toastMessage = 'Post deleted successfully';
+        $toastType = 'toast-info';
+        $toastIcon = 'minus';
+    } elseif ($status === 'unauthorized') {
+        $toastMessage = 'Unauthorized';
+        $toastType = 'toast-error';
+        $toastIcon = 'error';
     }
 }
 
@@ -130,16 +112,69 @@ foreach ($posts as $post) {
             $availableTags[strtolower($tag)] = $tag;
         }
     }
+    $featuredPost = null;
+    $featuredLikeCount = 0;
+    $featuredExcerpt = '';
 }
+$featuredResult = $conn->query('
+    SELECT posts.*, users.username, COUNT(likes.id) AS like_count
+    FROM posts
+    LEFT JOIN likes ON likes.post_id = posts.id
+    JOIN users ON posts.user_id = users.id
+    GROUP BY posts.id
+    ORDER BY like_count DESC, posts.created_at DESC
+    LIMIT 1
+');
 ksort($availableTags);
+if ($featuredResult instanceof mysqli_result) {
+    $featuredRow = $featuredResult->fetch_assoc();
+    if ($featuredRow) {
+        $featuredPost = $featuredRow;
+        $featuredLikeCount = (int) ($featuredRow['like_count'] ?? 0);
+
+        $rawFeaturedExcerpt = trim(strip_tags($featuredRow['content'] ?? ''));
+        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+            $featuredExcerpt = mb_strlen($rawFeaturedExcerpt) > 220 ? mb_substr($rawFeaturedExcerpt, 0, 220) . '…' : $rawFeaturedExcerpt;
+        } else {
+            $featuredExcerpt = strlen($rawFeaturedExcerpt) > 220 ? substr($rawFeaturedExcerpt, 0, 220) . '…' : $rawFeaturedExcerpt;
+        }
+    }
+    $featuredResult->free();
+}
 $availableTags = array_values($availableTags);
 ?>
 
 <section class="relative overflow-hidden px-6 py-16">
     <div class="pointer-events-none absolute inset-0 opacity-60" style="background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.9) 0%, rgba(250,246,233,0.4) 45%, rgba(250,246,233,0) 75%);"></div>
     <div class="relative max-w-4xl mx-auto text-center space-y-6">
-        <?php if ($successNotice): ?>
-            <?php echo $successNotice; ?>
+        <?php if ($toastMessage): ?>
+            <div data-toast class="toast-notification <?php echo $toastType; ?>" role="alert">
+                <span class="toast-icon">
+                    <?php if ($toastIcon === 'plus'): ?>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 5v14" stroke-linecap="round" />
+                            <path d="M5 12h14" stroke-linecap="round" />
+                        </svg>
+                    <?php elseif ($toastIcon === 'check'): ?>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M5 12.5L9.5 17l9-10" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    <?php elseif ($toastIcon === 'minus'): ?>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M5 12h14" stroke-linecap="round" />
+                        </svg>
+                    <?php else: ?>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 8v4" stroke-linecap="round" />
+                            <circle cx="12" cy="16" r="0.75" fill="currentColor" stroke="none" />
+                        </svg>
+                    <?php endif; ?>
+                </span>
+                <div class="toast-message">
+                    <?php echo htmlspecialchars($toastMessage, ENT_QUOTES, 'UTF-8'); ?>
+                </div>
+            </div>
         <?php endif; ?>
         <p class="uppercase tracking-[0.45em] text-[0.65rem] text-charcoal/60">CURATED STORIES FOR MODERN CREATORS</p>
         <h1 class="font-heading text-4xl md:text-5xl text-charcoal">Ideas that bridge creativity and technology</h1>
@@ -155,6 +190,59 @@ $availableTags = array_values($availableTags);
         <?php endif; ?>
     </div>
 </section>
+
+<?php if ($featuredPost): ?>
+    <section class="px-6 pb-12">
+        <div class="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] border border-charcoal/12 bg-linen/95 shadow-soft backdrop-blur">
+            <div class="pointer-events-none absolute inset-0 opacity-80" style="background: radial-gradient(circle at 12% 18%, rgba(255,255,255,0.95) 0%, rgba(250,246,233,0.65) 38%, rgba(244,237,213,0.4) 70%, rgba(244,237,213,0.05) 100%);"></div>
+            <div class="relative grid gap-10 p-10 md:grid-cols-[1.3fr_1fr] md:items-center">
+                <div class="space-y-6">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-charcoal/20 bg-white/70 px-4 py-2 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/70">
+                        Featured Story
+                        <svg aria-hidden="true" class="h-3 w-3 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path d="M12 5v14m0 0-5-5m5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <h2 class="font-heading text-3xl text-charcoal md:text-4xl lg:text-[2.65rem]">
+                        <a href="posts/view.php?id=<?php echo (int) $featuredPost['id']; ?>" class="hover:opacity-80 transition">
+                            <?php echo htmlspecialchars($featuredPost['title'] ?? 'Untitled story', ENT_QUOTES, 'UTF-8'); ?>
+                        </a>
+                    </h2>
+                    <p class="font-sans text-sm text-charcoal/70 md:text-base">
+                        <?php echo htmlspecialchars($featuredExcerpt, ENT_QUOTES, 'UTF-8'); ?>
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.28em] text-charcoal/60">
+                        <span><?php echo htmlspecialchars($featuredPost['username'] ?? 'Unknown', ENT_QUOTES, 'UTF-8'); ?> · <?php echo isset($featuredPost['created_at']) ? date('M d, Y', strtotime($featuredPost['created_at'])) : ''; ?></span>
+                        <span class="inline-flex items-center gap-2 rounded-full border border-charcoal/15 bg-white/70 px-3 py-1 text-[0.65rem] text-charcoal/70">
+                            <svg aria-hidden="true" class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
+                                <path d="M11.645 20.205l-.007-.004C5.986 15.88 2.5 12.634 2.5 8.75 2.5 6.126 4.57 4 7.25 4a4.5 4.5 0 0 1 3.75 1.97A4.5 4.5 0 0 1 14.75 4c2.68 0 4.75 2.126 4.75 4.75 0 3.883-3.486 7.13-9.138 11.456l-.007.004-.005.004a.75.75 0 0 1-.894 0l-.005-.004Z" fill="currentColor" />
+                            </svg>
+                            <?php echo number_format($featuredLikeCount); ?> likes
+                        </span>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="posts/view.php?id=<?php echo (int) $featuredPost['id']; ?>" class="btn-major inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]">
+                            Read the feature
+                            <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path d="M5 12h14" stroke-linecap="round" />
+                                <path d="M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="overflow-hidden rounded-3xl border border-charcoal/10 bg-white/50 shadow-soft">
+                    <?php if (!empty($featuredPost['cover_image'])): ?>
+                        <img src="uploads/<?php echo htmlspecialchars($featuredPost['cover_image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($featuredPost['title'] ?? 'Featured story cover', ENT_QUOTES, 'UTF-8'); ?>" class="h-full w-full object-cover" />
+                    <?php else: ?>
+                        <div class="flex h-full min-h-[18rem] w-full items-center justify-center bg-gradient-to-br from-sand via-cream to-linen text-xs uppercase tracking-[0.3em] text-charcoal/40">
+                            Awaiting cover
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
 
 <section id="stories" class="px-6 pb-16">
     <div class="max-w-6xl mx-auto space-y-10 bg-transparent">
@@ -306,7 +394,7 @@ $availableTags = array_values($availableTags);
                     </div>
                 </div>
                 <div class="flex flex-wrap justify-center gap-3 md:justify-start">
-                    <a href="register.php" class="btn-major inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]">
+                    <a href="/php_blog/auth/register.php" class="btn-major inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]">
                         Join the collective
                         <svg aria-hidden="true" class="h-3.5 w-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                             <path d="M5 12h14" stroke-linecap="round" />

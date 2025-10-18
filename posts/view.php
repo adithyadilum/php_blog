@@ -122,7 +122,7 @@ $post = $result->fetch_assoc();
                 <?php endif; ?>
 
                 <?php if (!isset($_SESSION['user_id'])): ?>
-                    <a href="../login.php" class="text-xs uppercase tracking-[0.25em] text-charcoal/70 hover:text-charcoal">Login to like</a>
+                    <a href="../auth/login.php" class="text-xs uppercase tracking-[0.25em] text-charcoal/70 hover:text-charcoal">Login to like</a>
                 <?php endif; ?>
             </div>
 
@@ -139,7 +139,7 @@ $post = $result->fetch_assoc();
         // Handle new comment
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
             if (!isset($_SESSION['user_id'])) {
-                echo "<p class='text-center text-sm text-red-500'>Please <a class=\"underline\" href='../login.php'>login</a> to comment.</p>";
+                echo "<p class='text-center text-sm text-red-500'>Please <a class=\"underline\" href='../auth/login.php'>login</a> to comment.</p>";
             } else {
                 $comment = trim($_POST['comment']);
                 $user_id = $_SESSION['user_id'];
@@ -176,7 +176,7 @@ $post = $result->fetch_assoc();
                         <button type="submit" class="btn-major inline-flex items-center justify-center rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em]">Post Comment</button>
                     </form>
                 <?php else: ?>
-                    <p class="text-center text-sm uppercase tracking-[0.25em] text-charcoal/70">Please <a href="../login.php" class="text-charcoal hover:underline">login</a> to comment.</p>
+                    <p class="text-center text-sm uppercase tracking-[0.25em] text-charcoal/70">Please <a href="../auth/login.php" class="text-charcoal hover:underline">login</a> to comment.</p>
                 <?php endif; ?>
 
                 <div class="space-y-6">

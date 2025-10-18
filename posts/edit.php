@@ -26,7 +26,13 @@ $stmt->close();
 
 // Access control
 if (!$isAdmin && $user_id != $owner_id) {
-    die("Unauthorized: You don't have permission to edit this post.");
+    $_SESSION['flash_toast'] = [
+        'message' => 'Unauthorized',
+        'type' => 'toast-error',
+        'icon' => 'error',
+    ];
+    header("Location: ../index.php");
+    exit;
 }
 
 // Fetch post for editing
@@ -41,8 +47,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo "Post not found or you don't have permission to edit it.";
-    include '../includes/footer.php';
+    $_SESSION['flash_toast'] = [
+        'message' => "Unauthorized",
+        'type' => 'toast-error',
+        'icon' => 'error',
+    ];
+    header("Location: ../index.php");
     exit;
 }
 
@@ -59,9 +69,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cover_image = $post['cover_image'];
     if (!empty($_FILES['cover_image']['name'])) {
         $target_dir = "../uploads/";
-        $file_name = basename($_FILES["cover_image"]["name"]);
+        $originalName = basename($_FILES['cover_image']['name']);
+        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $uniqueName = uniqid('cover_', true);
+        $file_name = $extension ? $uniqueName . '.' . $extension : $uniqueName;
         $target_file = $target_dir . $file_name;
-        if (move_uploaded_file($_FILES["cover_image"]["tmp_name"], $target_file)) {
+        if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $target_file)) {
             $cover_image = $file_name;
         } else {
             $message = "Failed to upload image!";
@@ -77,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($update->execute()) {
-        header("Location: ../index.php?msg=updated");
+        header("Location: view.php?id=" . $post_id);
         exit;
     } else {
         $message = "Error updating post: " . $update->error;
@@ -97,8 +110,26 @@ include '../includes/header.php';
             <p class="uppercase tracking-[0.4em] text-xs text-charcoal/60">Refine your narrative</p>
 
             <?php if (!empty($message)): ?>
-                <div class="mx-auto max-w-md rounded-2xl border <?php echo strpos($message, 'Error') === 0 ? 'border-red-200 bg-red-50 text-red-600' : 'border-emerald-200 bg-emerald-50 text-emerald-700'; ?> px-4 py-3 text-sm" role="alert">
-                    <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+                <?php
+                $isError = stripos($message, 'error') === 0 || stripos($message, 'failed') !== false;
+                $toastType = $isError ? 'toast-error' : 'toast-success';
+                ?>
+                <div data-toast class="toast-notification <?php echo $toastType; ?>" role="alert">
+                    <span class="toast-icon">
+                        <?php if ($isError): ?>
+                            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M15 9L9 15" stroke-linecap="round" />
+                                <path d="M9 9l6 6" stroke-linecap="round" />
+                            </svg>
+                        <?php else: ?>
+                            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M5 12.5L9.5 17l9-10" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        <?php endif; ?>
+                    </span>
+                    <div class="toast-message">
+                        <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
                 </div>
             <?php endif; ?>
 
