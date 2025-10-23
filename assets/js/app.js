@@ -1,9 +1,11 @@
 (function () {
+    // AJAX endpoint for toggling like state.
     const TOGGLE_URL = 'api/toggle_like.php';
     const ACTIVE_CLASSES = ['bg-charcoal', 'text-linen', 'border-charcoal'];
     const INACTIVE_CLASSES = ['bg-sand/60', 'text-charcoal', 'border-sand/80'];
     const INACTIVE_HOVER = ['hover:bg-charcoal', 'hover:text-linen'];
 
+    // Resize a textarea vertically to fit its content.
     function autoResizeTextarea(element) {
         if (!element) {
             return;
@@ -13,6 +15,7 @@
         element.style.height = `${element.scrollHeight}px`;
     }
 
+    // Attach autoresize behavior to marked textareas.
     function initTextareaAutoresize() {
         document.querySelectorAll('textarea[data-autoresize]').forEach((textarea) => {
             if (textarea.dataset.autoresizeInitialized === 'true') {
@@ -26,6 +29,7 @@
         });
     }
 
+    // Keep SimpleMDE editors height in sync with content.
     function adjustMarkdownHeight(editor) {
         if (!editor || !editor.codemirror) {
             return;
@@ -55,6 +59,7 @@
         classes.forEach((name) => target.classList.add(name));
     }
 
+    // Toggle button styles to reflect current like state.
     function setButtonState(button, liked) {
         if (liked) {
             removeClasses(button, [...INACTIVE_CLASSES, ...INACTIVE_HOVER]);
@@ -65,6 +70,7 @@
         }
     }
 
+    // Apply server response to the UI and update counts.
     function handleResponse(button, data, options = {}) {
         if (!data.success) {
             throw new Error(data.message || 'Failed to update like');
@@ -83,6 +89,7 @@
         }
     }
 
+    // Persist like/unlike intent via POST request.
     function sendToggleRequest(postId) {
         return fetch(TOGGLE_URL, {
             method: 'POST',
@@ -93,6 +100,7 @@
         }).then((response) => response.json());
     }
 
+    // Show a temporary disabled/loading state while awaiting async work.
     function withLoading(button, callback) {
         button.disabled = true;
         button.classList.add('opacity-70');
@@ -105,6 +113,7 @@
             });
     }
 
+    // Public handler invoked from the template when a like button is clicked.
     window.toggleLike = function toggleLike(postId) {
         const button = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
         if (!button) {
@@ -123,6 +132,7 @@
             }));
     };
 
+    // Bootstrap all Markdown editors, falling back if SimpleMDE is unavailable.
     function initMarkdownEditors() {
         if (!window.SimpleMDE) {
             return false;
@@ -168,6 +178,7 @@
 
     window.initMarkdownEditors = initMarkdownEditors;
 
+    // Respect user accessibility preferences for reduced motion.
     function shouldReduceMotion() {
         return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
@@ -182,6 +193,7 @@
         }
     }
 
+    // Smoothly scroll the page to the requested position with easing.
     function animateScrollTo(targetY) {
         if (shouldReduceMotion()) {
             window.scrollTo(0, targetY);
@@ -238,6 +250,7 @@
         scrollAnimationFrame = window.requestAnimationFrame(step);
     }
 
+    // Enable smooth scrolling for same-page anchor links.
     function initSmoothAnchors() {
         const links = document.querySelectorAll('a[href*="#"]:not([href="#"]):not([href="#0"])');
         if (!links.length) {
@@ -291,6 +304,7 @@
         });
     }
 
+    // Fade cards into view as they enter the viewport.
     function initCardReveal() {
         const cards = document.querySelectorAll('.story-card');
         if (!cards.length) {

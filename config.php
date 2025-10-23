@@ -10,6 +10,7 @@ if (!defined('APP_BASE_PATH')) {
  * Load environment variables from .env file located at project root.
  */
 if (!function_exists('loadAppEnv')) {
+    // Load key/value pairs from the project .env file into an array cache.
     function loadAppEnv(string $basePath): array
     {
         static $cachedEnv = null;

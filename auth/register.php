@@ -31,10 +31,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("ssss", $username, $email, $password, $role);
             if ($stmt->execute()) {
                 unset($_SESSION['guest_access']);
-                $message = "Registration successful! You can now log in.";
-            } else {
-                $message = "Error: " . $stmt->error;
+                $_SESSION['flash_toast'] = [
+                    'type' => 'toast-success',
+                    'icon' => 'check',
+                    'message' => 'Registration successful! You can now log in.',
+                ];
+                $stmt->close();
+                $check->close();
+                header("Location: login.php");
+                exit;
             }
+
+            $message = "Error: " . $stmt->error;
             $stmt->close();
         }
 
